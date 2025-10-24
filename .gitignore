@@ -1,0 +1,66 @@
+# ==============================
+# ROS 2 / Colcon Build Artifacts
+# ==============================
+build/
+install/
+log/
+.colcon/
+colcon_command_prefix.sh
+
+# ROS 2 Python Eggs / Wheels
+*.egg-info/
+*.egg
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# ==============================
+# Python Environment
+# ==============================
+.venv/
+venv/
+env/
+ENV/
+*.env
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ==============================
+# VS Code / JetBrains / Editors
+# ==============================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*.orig
+
+# ==============================
+# System Files
+# ==============================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# ==============================
+# Logs / Temp / Runtime Files
+# ==============================
+*.log
+*.tmp
+*.cache
+*.out
+
+# ==============================
+# Miscellaneous
+# ==============================
+# ROS 2 launch or test output
+*.launch.pyc
+*.test_results/
+
+# Ignore any OpenCV camera cache or calibration output
+camera_cache.yaml
+calibrationdata/
+output_images/
