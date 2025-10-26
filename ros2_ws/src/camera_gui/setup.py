@@ -13,6 +13,7 @@ setup(
         ('share/camera_gui/launch', [
             'launch/multi_camera.launch.py',
             'launch/multi_camera_with_sub.launch.py',
+            'launch/pyside.launch.py'
         ]),
     ],
     install_requires=['setuptools'],
@@ -31,6 +32,7 @@ setup(
             'image_publisher = camera_gui.image_publisher:main',
             'image_subscriber = camera_gui.image_subscriber:main',
             'multi_camera_subscriber = camera_gui.multi_camera_subscriber:main',
+            'camera_with_pyside = camera_gui.camera_with_pyside:main',
         ],
     },
 )
