@@ -16,6 +16,11 @@ class MultiCameraGUI(QMainWindow):
         self.bridge = CvBridge()
         self.num_cameras = num_cameras
         self.frames = [np.zeros((240, 320, 3), dtype=np.uint8) for _ in range(num_cameras)]
+        self.frames[0][:] = (0, 255, 0) # BGR for green
+        self.frames[1][:] = (255, 255, 0) # BGR for green
+        self.frames[2][:] = (0, 255, 255) # BGR for green
+        self.frames[3][:] = (255, 0, 0) # BGR for green
+        self.frames[4][:] = (0, 0, 255) # BGR for green
 
         #This is the delay per loop
         self.time_delay = 10
@@ -45,7 +50,7 @@ class MultiCameraGUI(QMainWindow):
         #Sets a timer to update the display
         self.display_timer = QTimer(self)
         self.display_timer.timeout.connect(self.update_display)
-        self.ros_spin_timer.start(self.display_delay)    
+        self.display_timer.start(self.display_delay)    
 
     #Processes ROS 2 callbacks
     def spin_ros(self):
