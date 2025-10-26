@@ -18,6 +18,11 @@ class MultiCameraSubscriber(Node):
 
         # Initialize placeholders for frames
         self.frames = [np.zeros((240, 320, 3), dtype=np.uint8) for _ in range(num_cameras)]
+        self.frames[0][:] = (0, 255, 0) # BGR for green
+        self.frames[1][:] = (255, 255, 0) # BGR for green
+        self.frames[2][:] = (0, 255, 255) # BGR for green
+        self.frames[3][:] = (255, 0, 0) # BGR for green
+        self.frames[4][:] = (0, 0, 255) # BGR for green
 
         # Subscribe to each camera topic
         for i in range(num_cameras):

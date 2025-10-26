@@ -10,14 +10,20 @@ class ImagePublisher(Node):
         super().__init__('image_publisher_' + str(camera_index))
         self.publisher_ = self.create_publisher(Image, topic_name, 10)
         self.timer = self.create_timer(0.03, self.timer_callback)
+
         self.cap = cv2.VideoCapture(camera_index)
+
+        #Checks to see if the camera even opens or not
+        if not self.cap.isOpened():
+            self.get_logger().error(f"FATAL: Failed to open camera index {camera_index}")
+
         self.bridge = CvBridge()
         self.get_logger().info(f"Publisher for camera {camera_index} on topic {topic_name}")
 
     def timer_callback(self):
         ret, frame = self.cap.read()
         if ret:
-            msg = self.bridge.cv2_to_imgmsg(frame, encoding='bgr8')
+            msg = self.bridge.cv2_to_imgmsg(self.frame, encoding='bgr8') #self.bridge.cv2_to_imgmsg(frame, encoding='bgr8')
             self.publisher_.publish(msg)
 
     def destroy_node(self):
