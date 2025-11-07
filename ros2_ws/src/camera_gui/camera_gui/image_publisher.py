@@ -11,7 +11,7 @@ class ImagePublisher(Node):
         self.publisher_ = self.create_publisher(Image, topic_name, 10)
         self.timer = self.create_timer(0.03, self.timer_callback)
 
-        self.cap = cv2.VideoCapture(camera_index)
+        self.cap = cv2.VideoCapture(i, cv2.CAP_V4L2)
 
         #Checks to see if the camera even opens or not
         if not self.cap.isOpened():
