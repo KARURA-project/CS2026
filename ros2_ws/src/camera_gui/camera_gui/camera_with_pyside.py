@@ -23,8 +23,8 @@ class MultiCameraGUI(QMainWindow):
         self.frames[4][:] = (0, 0, 255) # BGR for green
 
         #This is the delay per loop
-        self.time_delay = 10
-        self.display_delay = 33
+        self.time_delay = 10 # Delay for each ROS spin (100Hz)
+        self.display_delay = 33 # Delay of display updates (30Hz)
 
         #Set up ROS2
         if not rclpy.ok():
