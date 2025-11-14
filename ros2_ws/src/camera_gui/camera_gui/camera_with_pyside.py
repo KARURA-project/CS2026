@@ -16,6 +16,19 @@ FRAME_WIDTH = 640
 FRAME_HEIGHT = 480
 
 class MultiCameraGUI(QMainWindow):
+    """
+    Initializes the GUI, sets up ROS 2, and configures local camera capture objects.
+
+    Initializes data structures to hold frames, starts the local camera hardware, 
+    creates the ROS 2 node and subscribers, and sets up the two main QTimer 
+    loops for parallel ROS spinning and display/local camera reading.
+
+    Args:
+        num_ros_cameras (int, optional): The number of ROS 2 image topics 
+            to subscribe to (e.g., /camera0/image_raw). Defaults to 5.
+        num_local_cameras (int, optional): The number of local video devices 
+            (webcams) to attempt to open (indices 0, 1, ...). Defaults to NUM_LOCAL_CAMERAS.
+    """
     def __init__(self, num_ros_cameras = 5, num_local_cameras = NUM_LOCAL_CAMERAS):
         super().__init__()
         self.setWindowTitle("Multi-Camera Viewer (ROS & Local)")
@@ -84,13 +97,34 @@ class MultiCameraGUI(QMainWindow):
         self.display_timer.timeout.connect(self.read_local_cameras_and_update_display)
         self.display_timer.start(self.display_delay) 
 
-    # Processes ROS 2 callbacks (unchanged)
     def spin_ros(self):
+        """
+        Non-blocking processing of pending ROS 2 callbacks.
+
+        Checks if the ROS 2 context is valid and, if so, processes all queued 
+        messages, service requests, and timer events for the associated node.
+        """
         if rclpy.ok():
             rclpy.spin_once(self.ros_node, timeout_sec = 0)
 
-    # ROS 2 Callback function factory (saves frame to ros_frames list)
     def make_ros_callback(self, index):
+        """
+        ROS 2 callback factory that generates a function to process an incoming 
+        Image message and store it as an OpenCV (cv2) frame.
+
+        The returned callback function is intended to be used directly with a ROS 2 
+        subscriber. It converts the ROS 2 Image message into an OpenCV frame and 
+        saves it to a specific index in the instance's frame list (`self.ros_frames`).
+
+        Args:
+            self: The instance containing the CvBridge (`self.bridge`), 
+                the frame list (`self.ros_frames`), and the ROS node logger.
+            index (int): The index in `self.ros_frames` where the converted 
+                        OpenCV frame should be stored.
+
+        Returns:
+            function: A callback function that accepts a ROS 2 Image message (`msg`).
+        """
         def callback(msg):
             try:
                 frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
@@ -100,15 +134,22 @@ class MultiCameraGUI(QMainWindow):
         return callback
 
     def read_local_cameras_and_update_display(self):
-        # 1. Read Local Camera Frames
+        """
+        Reads frames from all active local camera capture objects, updates the 
+        combined frame list, and refreshes the display.
+
+        This method performs three main steps:
+        1. Reads a new frame from each available local video capture object 
+        (e.g., OpenCV VideoCapture) and stores it in self.local_frames.
+        2. Concatenates the ROS frames (self.ros_frames) and the newly read 
+        local frames (self.local_frames) into the final display list (self.all_frames).
+        3. Calls the separate method self.update_display() to render the frames.
+        """
         for i, cap in enumerate(self.captures):
             if cap is not None:
                 ret, frame = cap.read()
                 if ret:
-                    # Update the local frame buffer
                     self.local_frames[i] = frame
-                # Note: No need for else/error handling here unless you want 
-                # to continuously check for disconnections.
         
         # 2. Update the combined frame list
         self.all_frames = self.ros_frames + self.local_frames
@@ -118,6 +159,18 @@ class MultiCameraGUI(QMainWindow):
         
     # Combines frames and displays using PySide6 (now uses self.all_frames)
     def update_display(self):
+        """
+        Combines all available frames (ROS 2 and local) into a tiled layout 
+        using OpenCV and then converts the result for display in the PySide6 GUI.
+
+        The method processes frames in three main steps:
+        1. Resizes and tiles all frames in 'self.all_frames' (ROS + Local) into rows 
+        of three, padding the last row with black frames if necessary.
+        2. Horizontally concatenates frames in each row and then vertically 
+        concatenates the rows to create a single 'combined_bgr' image.
+        3. Converts the OpenCV image (BGR format) to a PySide6 QPixmap and sets 
+        it as the content of the GUI's display label ('self.image_label').
+        """
         try:
             # Recreates OpenCV combination logic (display_all from previous code)
             # Use the combined list of all frames (ROS + Local)
@@ -168,6 +221,17 @@ class MultiCameraGUI(QMainWindow):
             self.ros_node.get_logger().warn(f"Display update error: {e}")
             
     def closeEvent(self, event):
+        """
+        Overrides the standard QWidget close event handler to ensure proper 
+        resource cleanup when the main window is closed.
+
+        This method is crucial for releasing system resources held by local cameras 
+        and gracefully shutting down the ROS 2 context.
+
+        Args:
+            self: The application window instance.
+            event (QCloseEvent): The event object representing the window closing.
+        """
         # Clean up local camera resources
         for cap in self.captures:
             if cap is not None:
