@@ -11,6 +11,10 @@ class ImageSubscriber(Node):
     """
 
     def __init__(self):
+        """
+        Initializes the ImageSubscriber node, setting up the ROS 2 subscription 
+        and the CvBridge for image conversion.
+        """
         super().__init__('image_subscriber')
 
         # Subscribe to one topic (you can change the topic if needed)
