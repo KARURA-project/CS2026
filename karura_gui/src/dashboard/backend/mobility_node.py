@@ -7,11 +7,12 @@ TODO: fill in publishers/subscribers for mobility-only topics
 using the BaseDashboardNode._dispatch() pattern.
 """
 import sys
-from .base_node import BaseDashboardNode
+from base_node import BaseDashboardNode
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
+
 
 class MobilityNode(BaseDashboardNode):
     """
@@ -49,7 +50,7 @@ class MobilityNode(BaseDashboardNode):
         self.get_logger().info(f"[MobilityNode] Received status: {msg.data}")
 
     def publish_velocity(self):
-        temp_linear = 0 # temp variables
+        temp_linear = 0  # temp variables
         temp_angular = 0
         msg = Twist()
         msg.linear.x = temp_linear
