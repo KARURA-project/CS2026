@@ -10,8 +10,9 @@ import sys
 from base_node import BaseDashboardNode
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String
-from geometry_msgs.msg import Twist
+from std_msgs.msg import String, Float64MultiArray
+from geometry_msgs.msg import Twist, Vector3
+from nav_msgs.msg import Odometry
 
 
 class MobilityNode(BaseDashboardNode):
@@ -34,9 +35,30 @@ class MobilityNode(BaseDashboardNode):
         # cmd_vel publisher/subscriber
         self.cmd_vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
         self.velocity_timer = self.create_timer(1.0, self.publish_velocity)
-        self.i = 0
+        self.vel_counter = 0
         self.cmd_vel_sub = self.create_subscription(Twist, 'cmd_vel', self.cmd_vel_callback, 10)
-        self.get_logger().info("Mobility node ready (Twist publisher + sububscriber).")
+        self.get_logger().info("[Mobility] cmd_vel node ready (Twist publisher + sububscriber).")
+
+        # actual_rads publisher/subscriber
+        self.actual_rads_pub = self.create_publisher(Float64MultiArray, 'actual_rads', 10)
+        self.actual_rads_timer = self.create_timer(1.0, self.publish_actual_rads)
+        self.rad_counter = 0
+        self.actual_rads_sub = self.create_subscription(Float64MultiArray, 'actual_rads', self.actual_rads_callback, 10)
+        self.get_logger().info("[Mobility] actual_rads node ready (Float64MultiArray publisher + subscriber).")
+
+        # roll_pitch_yaw publisher/subscriber (rpy = roll_pitch_yaw)
+        self.rpy_pub = self.create_publisher(Vector3, 'roll_pitch_yaw', 10)
+        self.rpy_timer = self.create_timer(1.0, self.publish_rpy)
+        self.rpy_counter = 0
+        self.rpy_sub = self.create_subscription(Vector3, 'roll_pitch_yaw', self.rpy_callback, 10)
+        self.get_logger().info("[Mobility] roll_pitch_yaw node ready (Vector3 publisher + subscriber).")
+
+        # odometry_filtered publisher/subscriber
+        self.odometry_pub = self.create_publisher(Odometry, 'odometry_filtered', 10)
+        self.odometry_timer = self.create_timer(1.0, self.publish_odometry)
+        self.odometry_counter = 0
+        self.odometry_sub = self.create_subscription(Odometry, 'odometry_filtered', self.odometry_callback, 10)
+        self.get_logger().info("[Mobility] odometry_filtered node ready (Odometry publisher + subscriber)")
 
     # We have a timer here to send a "heartbeat" every 10 seconds to check on the node.
     def publish_heartbeat(self):
@@ -50,7 +72,7 @@ class MobilityNode(BaseDashboardNode):
         self.get_logger().info(f"[MobilityNode] Received status: {msg.data}")
 
     def publish_velocity(self):
-        temp_linear = 0  # temp variables
+        temp_linear = 0  # TODO, fill in temp variables
         temp_angular = 0
         msg = Twist()
         msg.linear.x = temp_linear
@@ -58,15 +80,76 @@ class MobilityNode(BaseDashboardNode):
         self.cmd_vel_pub.publish(msg)
 
         self.get_logger().info(f"[MobilityNode] Publisher, cmd_vel linear.x={msg.linear.x:.2f}, angular.z={msg.angular.z:.2f}")
-        self.i += 1
+        self.vel_counter += 1
 
     def cmd_vel_callback(self, msg: Twist):
         linear = msg.linear
         angular = msg.angular
         self.get_logger().info(
-            f"[MobilityNode] Subscriber, cmd_vel received, linear: ({linear.x:2f}, {linear.y:.2f}, {linear.z:.2f}),"
+            f"[MobilityNode] Subscriber, cmd_vel received, linear: ({linear.x:.2f}, {linear.y:.2f}, {linear.z:.2f}),"
             f" angular: ({angular.x:.2f}, {angular.y:.2f}, {angular.z:.2f})"
         )
+
+    def publish_actual_rads(self):
+        msg = Float64MultiArray()
+
+        # TODO fill in temporary variables (0s and 1s)
+        msg.data = [
+            0 + self.rad_counter * 1,
+            0 + self.rad_counter * 1,
+            0 + self.rad_counter * 1,
+            0 + self.rad_counter * 1
+        ]
+        self.actual_rads_pub.publish(msg)
+        self.get_logger().info(f"[MobilityNode] Publisher, actual_rads value: {msg.data}")
+        self.rad_counter += 1
+
+    def actual_rads_callback(self, msg: Float64MultiArray):
+        self.get_logger().info(f"[MobilityNode] Subscriber, actual_rads received: {msg.data}")
+
+    def publish_rpy(self):
+        msg = Vector3()
+
+        # TODO fill in temporary variables (0.1, 0.05, 0.2)
+        msg.x = 0.1 * self.rpy_counter # roll
+        msg.y = 0.05 * self.rpy_counter # pitch
+        msg.z = 0.2 * self.rpy_counter # yaw
+        self.rpy_pub.publish(msg)
+        self.get_logger().info(f"[MobilityNode] Publisher, roll_pitch_yaw values: roll={msg.x:.2f} pitch={msg.y:.2f} yaw={msg.z:.2f}")
+        self.rpy_counter += 1
+
+    def rpy_callback(self, msg: Vector3):
+        self.get_logger().info(f"[MobilityNode] Subscriber, roll_pitch_yaw values received: "
+                              f"roll={msg.x:.2f} pitch={msg.y:.2f} yaw={msg.z:.2f}")
+
+    def publish_odometry(self):
+        msg = Odometry()
+        msg.header.frame_id = "odometry_filtered"
+        msg.child_frame_id = "base_link"
+
+        # TODO fill in temp variables for pose and velocity
+        msg.pose.pose.position.x = 0.1 * self.odometry_counter
+        msg.pose.pose.position.y = 0
+        msg.pose.pose.position.z = 0
+
+        msg.pose.pose.orientation.z = 0
+        msg.pose.pose.orientation.w = 1.0
+
+        msg.twist.twist.linear.x = 0.1
+        msg.twist.twist.angular.z = 0.01
+
+        self.odometry_pub.publish(msg)
+        self.get_logger().info(f"[MobilityNode] Publisher, odometry_filtered values: x={msg.pose.pose.position.x:.2f},"
+                               f" vx={msg.twist.twist.linear.x:.2f}")
+        self.odometry_counter += 1
+
+    def odometry_callback(self, msg: Odometry):
+        x = msg.pose.pose.position.x
+        y = msg.pose.pose.position.y
+        theta_z = msg.pose.pose.orientation.z
+
+        self.get_logger().info(f"[MobilityNode] Subscriber, odometry_filtered received: "
+                               f"x={x:.2f} y={y:.2f} z={theta_z:.2f}")
 
 
 def main():
