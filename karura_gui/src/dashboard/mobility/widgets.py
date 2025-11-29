@@ -38,7 +38,6 @@ class CameraWidget(QWidget):
         self.label = QLabel("Camera")
 
 #Initalizes panels
-
 class MainCameraPanel(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -61,7 +60,7 @@ class MotorInfoPanel(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.boxes = []  
+        self.motors = []  
         self.columns = 2
 
         self.layout = QGridLayout()
@@ -71,25 +70,44 @@ class MotorInfoPanel(QWidget):
 
     def update_ui(self):
         #Manually updates the size of the box
-        self.setFixedSize(400, 100 * math.ceil(len(self.boxes) / self.columns))
+        self.setFixedSize(400, 100 * math.ceil(len(self.motors) / self.columns))
 
     def add_battery(self):
-        box = MotorInfoBox()
+        mot = MotorInfoBox()
 
         #Makes background color show
-        box.setAttribute(PySide6.QtCore.Qt.WA_StyledBackground, True)
+        mot.setAttribute(PySide6.QtCore.Qt.WA_StyledBackground, True)
 
         # FORCE every widget to expand but NEVER overlap
-        box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        mot.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        index = len(self.boxes)
-        self.boxes.append(box)
+        index = len(self.motors)
+        self.motors.append(mot)
 
         row = index // self.columns
         col = index % self.columns
 
         self.update_ui()
 
-        self.layout.addWidget(box, row, col)
+        self.layout.addWidget(mot, row, col)
 
-        return box
+        return mot
+    
+    def update_values(self, arr):
+        """
+        Update each motor's speed and battery display.
+
+        Only updates if `arr` length matches `self.motors`. Each entry in `arr` must be an
+        object with `.speed` and `.battery` values.
+        """
+
+        #Checks if the arr length equals the number of batteries
+        if(len(arr) != len(self.motors)):
+            return
+        
+        #Updates each value. 
+        for i in range(0, len(arr)):
+            print(arr[i])
+            self.motors[i].ui.speed_value.setText(PySide6.QtCore.QCoreApplication.translate("MotorInfoBox", u"{value}".format(value = arr[i]["speed"]), None))
+            self.motors[i].ui.battery_bar.setValue(arr[i]["battery"])
+        
