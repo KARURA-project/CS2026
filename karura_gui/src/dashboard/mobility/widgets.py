@@ -57,8 +57,8 @@ class MainCameraPanel(QWidget):
         self.setMaximumHeight(170)
 
 class MotorInfoPanel(QWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
         self.motors = []  
         self.columns = 2

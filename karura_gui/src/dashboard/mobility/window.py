@@ -1,41 +1,46 @@
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget
 from widgets import MainCameraPanel, MotorInfoPanel
+from MobilityScreen import Ui_MainWindow
 from PySide6.QtCore import QTimer
 import time
 import random
 
 app = QApplication(sys.argv)
 
-class MobilityMainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
+# class MobilityMainWindow(QMainWindow):
+#     def __init__(self):
+#         super().__init__()
 
         # self.central = MainCameraPanel()
         # self.setCentralWidget(self.central)
 
-        self.central = MotorInfoPanel()
-        self.setCentralWidget(self.central)
+        # self.central = MotorInfoPanel()
+        # self.setCentralWidget(self.central)
 
-        self.central.add_battery()
-        self.central.add_battery()
-        self.central.add_battery()
-        self.central.add_battery()
-        self.central.add_battery()
-        self.central.add_battery()
+        # self.central.add_battery()
+        # self.central.add_battery()
+        # self.central.add_battery()
+        # self.central.add_battery()
+        # self.central.add_battery()
+        # self.central.add_battery()
 
-        self.update_timer = QTimer(self)
-        self.update_timer.timeout.connect(self.update_ui)
-        self.update_timer.start(3000)
+class MobilityScreen(QMainWindow): 
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
-    def update_ui(self):
-        temp_arr = []
-        for i in range(0, len(self.central.motors)):
-            temp_arr.append({
-                "speed": int(random.normalvariate(50, 10)),
-                "battery": int(random.normalvariate(60, 5))
-            })
-        self.central.update_values(temp_arr)
+        # Sets the UI to use the one made by designer
+        self.ui = Ui_MainWindow()
+        # self is now a QMainWindow, which has setCentralWidget()
+        self.ui.setupUi(self)
+
+class MobilityMainWindow(QMainWindow):
+    def __init__(self):
+            super().__init__()
+
+            # Set the central widget to the custom MobilityScreen
+            self.central = MobilityScreen()
+            self.setCentralWidget(self.central)
 
 mobility_window = MobilityMainWindow()
 mobility_window.setWindowTitle("Mobility")

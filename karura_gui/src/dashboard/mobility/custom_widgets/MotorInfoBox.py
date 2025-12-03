@@ -260,7 +260,7 @@ class Ui_MotorInfoBox(object):
 #endif
         self.battery_bar.setPalette(palette4)
         self.battery_bar.setStyleSheet(u"color: rgb(255, 255, 255);")
-        self.battery_bar.setValue(24)
+        self.battery_bar.setValue(100)
 
         self.horizontalLayout.addWidget(self.battery_bar)
 
