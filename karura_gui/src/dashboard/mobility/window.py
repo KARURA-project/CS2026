@@ -41,7 +41,7 @@ class MobilityMainWindow(QMainWindow):
             # Set the central widget to the custom MobilityScreen
             self.central = MobilityScreen()
             self.setCentralWidget(self.central)
-
+            self.setStyleSheet("background-color: gray;")
 mobility_window = MobilityMainWindow()
 mobility_window.setWindowTitle("Mobility")
 mobility_window.resize(600, 400)

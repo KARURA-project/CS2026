@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
     QMainWindow, QMenuBar, QSizePolicy, QStatusBar,
     QVBoxLayout, QWidget)
 
-from widgets import MotorInfoPanel, MainCameraPanel
+from widgets import MotorInfoPanel, MainCameraPanel, MobilityControls
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -84,13 +84,17 @@ class Ui_MainWindow(object):
         self.centralgroup.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_4 = QVBoxLayout(self.centralgroup)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.frame_2 = QFrame(self.centralgroup)
-        self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setMaximumSize(QSize(400, 300))
-        self.frame_2.setFrameShape(QFrame.Shape.StyledPanel)
-        self.frame_2.setFrameShadow(QFrame.Shadow.Raised)
+        # self.frame_2 = QFrame(self.centralgroup)
+        # self.frame_2.setObjectName(u"frame_2")
+        # self.frame_2.setMaximumSize(QSize(400, 300))
+        # self.frame_2.setFrameShape(QFrame.Shape.StyledPanel)
+        # self.frame_2.setFrameShadow(QFrame.Shadow.Raised)
 
-        self.verticalLayout_4.addWidget(self.frame_2)
+        self.frame2 = MainCameraPanel(self.centralgroup)
+        self.frame2.setObjectName(u"frame_2")
+        self.frame2.setMaximumSize(QSize(300,150))
+
+        self.verticalLayout_4.addWidget(self.frame2)
 
         # self.frame = QFrame(self.centralgroup)
         # self.frame.setObjectName(u"frame")
@@ -98,14 +102,11 @@ class Ui_MainWindow(object):
         # self.frame.setFrameShape(QFrame.Shape.StyledPanel)
         # self.frame.setFrameShadow(QFrame.Shadow.Raised)
 
-        self.frame = MainCameraPanel(self.centralgroup)
+        self.frame = MobilityControls(self.centralgroup)
         self.frame.setObjectName(u"frame_2")
-        self.frame.setMaximumSize(QSize(300,150))
-
+        self.frame.setMaximumSize(QSize(400,300))
 
         self.verticalLayout_4.addWidget(self.frame)
-
-
         self.horizontalLayout.addWidget(self.centralgroup)
 
         self.rightgroup = QFrame(self.centralwidget)

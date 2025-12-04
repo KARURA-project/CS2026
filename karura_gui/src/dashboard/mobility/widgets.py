@@ -3,6 +3,7 @@ import PySide6.QtCore
 from custom_widgets.MotorInfoBox import Ui_MotorInfoBox
 from custom_widgets.NetworkStatus import Ui_NetworkStatus
 from custom_widgets.CameraSwitchButton import Ui_CameraSwitchButton
+from custom_widgets.MobilityControls import Ui_MobilityControls
 import math
 
 #Initalizes QT widgets
@@ -29,6 +30,14 @@ class CameraSwitchButton(QWidget):
 
         #Sets the UI to use the one made by designer
         self.ui = Ui_CameraSwitchButton()
+        self.ui.setupUi(self)
+
+class MobilityControls(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        #Sets the UI to use the one made by designer
+        self.ui = Ui_MobilityControls()
         self.ui.setupUi(self)
 
 #Initalizes python widgets
