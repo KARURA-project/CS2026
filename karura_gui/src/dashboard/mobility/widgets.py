@@ -4,6 +4,7 @@ from custom_widgets.MotorInfoBox import Ui_MotorInfoBox
 from custom_widgets.NetworkStatus import Ui_NetworkStatus
 from custom_widgets.CameraSwitchButton import Ui_CameraSwitchButton
 from custom_widgets.MobilityControls import Ui_MobilityControls
+from custom_widgets.IMUWidget import Ui_IMUWidget
 import math
 
 #Initalizes QT widgets
@@ -38,6 +39,14 @@ class MobilityControls(QWidget):
 
         #Sets the UI to use the one made by designer
         self.ui = Ui_MobilityControls()
+        self.ui.setupUi(self)
+
+class IMUWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        #Sets the UI to use the one made by designer
+        self.ui = Ui_IMUWidget()
         self.ui.setupUi(self)
 
 #Initalizes python widgets

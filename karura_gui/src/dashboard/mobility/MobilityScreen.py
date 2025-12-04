@@ -19,7 +19,8 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
     QMainWindow, QMenuBar, QSizePolicy, QStatusBar,
     QVBoxLayout, QWidget)
 
-from widgets import MotorInfoPanel, MainCameraPanel, MobilityControls
+from widgets import MotorInfoPanel, MainCameraPanel, MobilityControls, IMUWidget
+from custom_widgets.Camera import VideoWidget
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -53,11 +54,15 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.SecondaryCam)
 
-        self.IMU = QFrame(self.leftgroup)
-        self.IMU.setObjectName(u"IMU")
+        # self.IMU = QFrame(self.leftgroup)
+        # self.IMU.setObjectName(u"IMU")
+        # self.IMU.setMinimumSize(QSize(0, 400))
+        # self.IMU.setFrameShape(QFrame.Shape.StyledPanel)
+        # self.IMU.setFrameShadow(QFrame.Shadow.Raised)
+
+        self.IMU = IMUWidget(self.leftgroup)
+        self.IMU.setObjectName(u"IMUWidget")
         self.IMU.setMinimumSize(QSize(0, 400))
-        self.IMU.setFrameShape(QFrame.Shape.StyledPanel)
-        self.IMU.setFrameShadow(QFrame.Shadow.Raised)
 
         self.verticalLayout.addWidget(self.IMU)
 
@@ -107,6 +112,13 @@ class Ui_MainWindow(object):
         self.frame.setMaximumSize(QSize(400,300))
 
         self.verticalLayout_4.addWidget(self.frame)
+
+        self.frame3 = VideoWidget()
+        self.frame3.setObjectName(u"frame_3")
+        self.frame.setMaximumSize(QSize(640,360)) 
+
+        self.verticalLayout_4.addWidget(self.frame3)
+
         self.horizontalLayout.addWidget(self.centralgroup)
 
         self.rightgroup = QFrame(self.centralwidget)
