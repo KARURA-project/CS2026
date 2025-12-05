@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
 
 from widgets import MotorInfoPanel, MainCameraPanel, MobilityControls, IMUWidget
 from custom_widgets.Camera import VideoWidget
+from custom_widgets.Terminal import PrimitiveTerminalWidget, DEFAULT_TTY_CMD
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -40,17 +41,23 @@ class Ui_MainWindow(object):
         self.leftgroup.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout = QVBoxLayout(self.leftgroup)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.SecondaryCam = QFrame(self.leftgroup)
         self.SecondaryCam.setObjectName(u"SecondaryCam")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.SecondaryCam.sizePolicy().hasHeightForWidth())
-        self.SecondaryCam.setSizePolicy(sizePolicy)
-        self.SecondaryCam.setMinimumSize(QSize(100, 100))
-        self.SecondaryCam.setMaximumSize(QSize(150, 150))
-        self.SecondaryCam.setFrameShape(QFrame.Shape.StyledPanel)
-        self.SecondaryCam.setFrameShadow(QFrame.Shadow.Raised)
+        # self.SecondaryCam.setSizePolicy(sizePolicy)
+        # self.SecondaryCam.setMinimumSize(QSize(100, 100))
+        # self.SecondaryCam.setMaximumSize(QSize(150, 150))
+        # self.SecondaryCam.setFrameShape(QFrame.Shape.StyledPanel)
+        # self.SecondaryCam.setFrameShadow(QFrame.Shadow.Raised)
+
+        self.SecondaryCam = VideoWidget(None, 1)
+        self.SecondaryCam.setObjectName(u"frame_3")
+        self.SecondaryCam.setMaximumSize(QSize(360,360)) 
+
 
         self.verticalLayout.addWidget(self.SecondaryCam)
 
@@ -74,6 +81,10 @@ class Ui_MainWindow(object):
         self.BatteryData = MotorInfoPanel(self.leftgroup)
         self.BatteryData.setObjectName(u"BatteryData")
         self.BatteryData.setMinimumSize(QSize(200, 200))
+        self.BatteryData.add_battery()
+        self.BatteryData.add_battery()
+        self.BatteryData.add_battery()
+        self.BatteryData.add_battery()
         self.BatteryData.add_battery()
         self.BatteryData.add_battery()
         self.verticalLayout.addWidget(self.BatteryData)
@@ -113,7 +124,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_4.addWidget(self.frame)
 
-        self.frame3 = VideoWidget()
+        self.frame3 = VideoWidget(None, 0)
         self.frame3.setObjectName(u"frame_3")
         self.frame.setMaximumSize(QSize(640,360)) 
 
@@ -134,6 +145,7 @@ class Ui_MainWindow(object):
         self.rightgroup.setStyleSheet(u"align-items: center;")
         self.rightgroup.setFrameShape(QFrame.Shape.StyledPanel)
         self.rightgroup.setFrameShadow(QFrame.Shadow.Raised)
+        self.rightgroupLayout = QVBoxLayout(self.rightgroup)
         self.verticalLayout_2 = QVBoxLayout(self.rightgroup)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(0, -1, 0, -1)
@@ -164,11 +176,16 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addWidget(self.AerialInfo)
 
+        self.Terminal = PrimitiveTerminalWidget()
+        self.Terminal.spawn(DEFAULT_TTY_CMD) #Spawns terminal
+        self.verticalLayout_3.addWidget(self.Terminal)
+
 
         self.verticalLayout_2.addWidget(self.groupBox)
 
 
         self.horizontalLayout.addWidget(self.rightgroup)
+    
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)

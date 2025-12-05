@@ -32,10 +32,11 @@ class CameraWorker(QThread):
     frame_ready = Signal(np.ndarray) # Signal to emit the captured frame (numpy array)
     error_occurred = Signal(str)     # Signal for errors, like camera not opening
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, camera_id = 0):
         super().__init__(parent)
         self._is_running = True
         self.cap = None
+        self.camera_id = camera_id
 
     def run(self):
         """
@@ -43,7 +44,7 @@ class CameraWorker(QThread):
         """
         # 0 usually refers to the first camera. Using CAP_V4L2 for Linux compatibility
         # as suggested by the original code, but it's often optional.
-        self.cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
+        self.cap = cv2.VideoCapture(self.camera_id, cv2.CAP_V4L2)
 
         if not self.cap.isOpened():
             self.error_occurred.emit("Error: Could not open camera. Check camera index or permissions.")
@@ -89,7 +90,7 @@ class VideoWidget(QWidget):
     """
     The main widget that displays the video feed.
     """
-    def __init__(self):
+    def __init__(self, parent=None, camera_id = 0):
         super().__init__()
         self.setWindowTitle("PySide6 OpenCV Camera Feed")
         # self.setMinimumSize(640, 480)
@@ -105,7 +106,7 @@ class VideoWidget(QWidget):
         self.layout.addWidget(self.video_label)
 
         # Initialize the worker thread
-        self.camera_worker = CameraWorker()
+        self.camera_worker = CameraWorker(None, camera_id)
 
         # Connect signals from the worker thread
         self.camera_worker.frame_ready.connect(self.update_image)

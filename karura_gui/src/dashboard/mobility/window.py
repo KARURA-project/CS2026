@@ -8,23 +8,6 @@ import random
 
 app = QApplication(sys.argv)
 
-# class MobilityMainWindow(QMainWindow):
-#     def __init__(self):
-#         super().__init__()
-
-        # self.central = MainCameraPanel()
-        # self.setCentralWidget(self.central)
-
-        # self.central = MotorInfoPanel()
-        # self.setCentralWidget(self.central)
-
-        # self.central.add_battery()
-        # self.central.add_battery()
-        # self.central.add_battery()
-        # self.central.add_battery()
-        # self.central.add_battery()
-        # self.central.add_battery()
-
 class MobilityScreen(QMainWindow): 
     def __init__(self, parent=None):
         super().__init__(parent)

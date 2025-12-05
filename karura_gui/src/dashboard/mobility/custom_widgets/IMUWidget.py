@@ -16,20 +16,59 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QGridLayout, QGroupBox, QLabel,
-    QSizePolicy, QWidget)
+    QSizePolicy, QWidget, QVBoxLayout)
 
 class Ui_IMUWidget(object):
     def setupUi(self, Ui_IMUWidget):
+        # 1. Basic Window Setup
         if not Ui_IMUWidget.objectName():
             Ui_IMUWidget.setObjectName(u"Ui_IMUWidget")
-        Ui_IMUWidget.resize(443, 348)
-        self.mars_rover_image = QLabel(Ui_IMUWidget)
+        Ui_IMUWidget.resize(460, 500)  # Increased width slightly to fit your diagram minimum
+        Ui_IMUWidget.setMaximumHeight(550)
+
+        # 2. Define the Group Boxes
+        self.IMUDiagram = QGroupBox(Ui_IMUWidget)
+        self.IMUDiagram.setMinimumWidth(450)
+        self.IMUDiagram.setMinimumHeight(350)
+
+        self.IMUGeneralInfo = QGroupBox(Ui_IMUWidget)
+        self.IMUGeneralInfo.setMaximumHeight(50)
+
+        # 3. Setup the Grid Layout inside General Info
+        self.IMUGeneralInfogridLayout = QGridLayout(self.IMUGeneralInfo)
+
+
+        # 4. Setup Labels (Roll, Pitch, Yaw)
+        self.IMURoverRoll = QLabel(self.IMUGeneralInfo)
+        self.IMURoverRoll.setObjectName(u"IMURoverRoll")
+        self.IMURoverRoll.setText("Roll: 0.0")  # Added text so it's not invisible
+
+        self.IMURoverPitch = QLabel(self.IMUGeneralInfo)
+        self.IMURoverPitch.setObjectName(u"IMURoverPitch")
+        self.IMURoverPitch.setText("Pitch: 0.0") # Added text
+
+        self.IMURoverYaw = QLabel(self.IMUGeneralInfo)
+        self.IMURoverYaw.setObjectName(u"IMURoverYaw")
+        self.IMURoverYaw.setText("Yaw: 0.0")   # Added text
+
+        # 5. Add Labels to the General Info Grid
+        self.IMUGeneralInfogridLayout.addWidget(self.IMURoverRoll, 0, 0)
+        self.IMUGeneralInfogridLayout.addWidget(self.IMURoverPitch, 0, 1)
+        self.IMUGeneralInfogridLayout.addWidget(self.IMURoverYaw, 0, 2)
+
+        # 6. MASTER LAYOUT SETUP (This was the missing part)
+        self.IMUgridLayout = QVBoxLayout(Ui_IMUWidget)
+        
+        # Add the two main sections to the master layout
+        self.IMUgridLayout.addWidget(self.IMUDiagram)
+        self.IMUgridLayout.addWidget(self.IMUGeneralInfo)
+
+        self.mars_rover_image = QLabel(self.IMUDiagram)
         self.mars_rover_image.setObjectName(u"mars_rover_image")
         self.mars_rover_image.setGeometry(QRect(110, 90, 211, 171))
         self.mars_rover_image.setPixmap(QPixmap(u"qt_designer/icons/rover.png"))
         self.mars_rover_image.setScaledContents(True)
-        self.IMUDiagram = QGroupBox(Ui_IMUWidget)
-        self.FrontLeftWheelBox = QGroupBox(Ui_IMUWidget)
+        self.FrontLeftWheelBox = QGroupBox(self.IMUDiagram)
         self.FrontLeftWheelBox.setObjectName(u"FrontLeftWheelBox")
         self.FrontLeftWheelBox.setGeometry(QRect(0, 10, 161, 81))
         self.gridLayout = QGridLayout(self.FrontLeftWheelBox)
@@ -59,7 +98,7 @@ class Ui_IMUWidget(object):
 
         self.gridLayout.addWidget(self.FrontLeftWheelTargetValue, 2, 1, 1, 1)
 
-        self.FrontRightWheelBox = QGroupBox(Ui_IMUWidget)
+        self.FrontRightWheelBox = QGroupBox(self.IMUDiagram)
         self.FrontRightWheelBox.setObjectName(u"FrontRightWheelBox")
         self.FrontRightWheelBox.setGeometry(QRect(280, 10, 161, 81))
         self.gridLayout_3 = QGridLayout(self.FrontRightWheelBox)
@@ -89,7 +128,7 @@ class Ui_IMUWidget(object):
 
         self.gridLayout_3.addWidget(self.FrontRightWheelTargetValue, 2, 1, 1, 1)
 
-        self.BackLeftWheelBox = QGroupBox(Ui_IMUWidget)
+        self.BackLeftWheelBox = QGroupBox(self.IMUDiagram)
         self.BackLeftWheelBox.setObjectName(u"BackLeftWheelBox")
         self.BackLeftWheelBox.setGeometry(QRect(10, 260, 161, 81))
         self.gridLayout_4 = QGridLayout(self.BackLeftWheelBox)
@@ -119,7 +158,7 @@ class Ui_IMUWidget(object):
 
         self.gridLayout_4.addWidget(self.BackLeftWheelTargetValue, 2, 1, 1, 1)
 
-        self.BackRightWheelBox = QGroupBox(Ui_IMUWidget)
+        self.BackRightWheelBox = QGroupBox(self.IMUDiagram)
         self.BackRightWheelBox.setObjectName(u"BackRightWheelBox")
         self.BackRightWheelBox.setGeometry(QRect(270, 260, 161, 81))
         self.gridLayout_6 = QGridLayout(self.BackRightWheelBox)
