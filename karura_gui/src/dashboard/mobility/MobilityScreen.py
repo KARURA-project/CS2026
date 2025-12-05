@@ -92,6 +92,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.leftgroup)
 
+        #This represents the central group
         self.centralgroup = QFrame(self.centralwidget)
         self.centralgroup.setObjectName(u"centralgroup")
         self.centralgroup.setMinimumSize(QSize(400, 550))
@@ -106,11 +107,10 @@ class Ui_MainWindow(object):
         # self.frame_2.setFrameShape(QFrame.Shape.StyledPanel)
         # self.frame_2.setFrameShadow(QFrame.Shadow.Raised)
 
-        self.frame2 = MainCameraPanel(self.centralgroup)
-        self.frame2.setObjectName(u"frame_2")
-        self.frame2.setMaximumSize(QSize(300,150))
-
-        self.verticalLayout_4.addWidget(self.frame2)
+        #This initalizes the main camera panel
+        self.maincamerapanel = MainCameraPanel(self.centralgroup)
+        self.maincamerapanel.setObjectName(u"maincamerapanel")
+        self.maincamerapanel.setMaximumSize(QSize(300,150))
 
         # self.frame = QFrame(self.centralgroup)
         # self.frame.setObjectName(u"frame")
@@ -118,19 +118,22 @@ class Ui_MainWindow(object):
         # self.frame.setFrameShape(QFrame.Shape.StyledPanel)
         # self.frame.setFrameShadow(QFrame.Shadow.Raised)
 
-        self.frame = MobilityControls(self.centralgroup)
-        self.frame.setObjectName(u"frame_2")
-        self.frame.setMaximumSize(QSize(400,300))
+        #This initalizes the mobility controls panel
+        self.mobilitycontrols = MobilityControls(self.centralgroup)
+        self.mobilitycontrols.setObjectName(u"mobilitycontrols")
+        self.mobilitycontrols.setMaximumSize(QSize(400,300))
 
-        self.verticalLayout_4.addWidget(self.frame)
+        #This initalizes the main camera video widget
+        self.maincameravideo = VideoWidget(None, 0)
+        self.maincameravideo.setObjectName(u"maincameravideo")
+        self.maincameravideo.setMaximumSize(QSize(640,360)) 
 
-        self.frame3 = VideoWidget(None, 0)
-        self.frame3.setObjectName(u"frame_3")
-        self.frame.setMaximumSize(QSize(640,360)) 
 
-        self.verticalLayout_4.addWidget(self.frame3)
-
+        self.verticalLayout_4.addWidget(self.maincameravideo)
+        self.verticalLayout_4.addWidget(self.maincamerapanel)
+        self.verticalLayout_4.addWidget(self.mobilitycontrols)
         self.horizontalLayout.addWidget(self.centralgroup)
+        self.horizontalLayout.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
         self.rightgroup = QFrame(self.centralwidget)
         self.rightgroup.setObjectName(u"rightgroup")
@@ -163,7 +166,7 @@ class Ui_MainWindow(object):
         self.AerialImg.setMaximumSize(QSize(300, 300))
         self.AerialImg.setStyleSheet(u"align-items: center;")
         self.AerialImg.setFrameShape(QFrame.Shape.StyledPanel)
-        self.AerialImg.setFrameShadow(QFrame.Shadow.Raised)
+        self.AerialImg.setFrameShadow(QFrame.Shadow.Raised) 
 
         self.verticalLayout_3.addWidget(self.AerialImg)
 
