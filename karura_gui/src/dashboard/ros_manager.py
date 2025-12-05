@@ -25,6 +25,7 @@ class ROSManager:
             }
         """
 
+
         rclpy.init()
         self.executor = MultiThreadedExecutor()
         self.nodes = []
