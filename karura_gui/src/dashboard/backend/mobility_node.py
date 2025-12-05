@@ -40,7 +40,7 @@ class MobilityNode(BaseDashboardNode):
         self.get_logger().info("[Mobility] cmd_vel node ready (Twist publisher + sububscriber).")
 
         # actual_rads publisher/subscriber
-        self.actual_rads_pub = self.create_publisher(Float64MultiArray, 'actual_rads', 10)
+        self.actual_rads_pub = self.create_publisher(Float64MultiArray, 'actual_rads', 10)  
         self.actual_rads_timer = self.create_timer(1.0, self.publish_actual_rads)
         self.rad_counter = 0
         self.actual_rads_sub = self.create_subscription(Float64MultiArray, 'actual_rads', self.actual_rads_callback, 10)
@@ -161,5 +161,5 @@ def main():
     rclpy.shutdown()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  
     main()

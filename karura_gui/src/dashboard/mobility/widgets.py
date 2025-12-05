@@ -41,6 +41,11 @@ class MobilityControls(QWidget):
         self.ui = Ui_MobilityControls()
         self.ui.setupUi(self)
 
+        self.ui.triangledown.clicked.connect(lambda: print("Down clicked"))
+        self.ui.triangleup.clicked.connect(lambda: print("Up clicked"))
+        self.ui.triangleleft.clicked.connect(lambda: print("Left clicked"))
+        self.ui.triangleright.clicked.connect(lambda: print("Right clicked"))
+
 class IMUWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
