@@ -11,14 +11,15 @@ from PySide6.QtWidgets import (
     QGridLayout,
     QProgressBar,
     QCheckBox,
-    QHBoxLayout,
+    QFrame,
 )
-from PySide6.QtCore import Qt
-
+from PySide6.QtCore import Qt, QTimer
+from dashboard.core.widgets.bottom_bar import BottomBarView
 
 class BandwidthMonitorView(QWidget):
     """
-    Top-left view: Bandwidth Monitor + Usage Meter + Camera usage (view only).
+    Top-left view: Bandwidth Monitor on top,
+    Camera toggles + per-camera bandwidth underneath (view only).
     """
 
     def __init__(self, parent=None):
@@ -28,52 +29,59 @@ class BandwidthMonitorView(QWidget):
         main_layout.setContentsMargins(8, 8, 8, 8)
         main_layout.setSpacing(10)
 
-        # Section title
+        # ----- Section title -----
         title = QLabel("Bandwidth Monitor")
         title.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         main_layout.addWidget(title)
 
-        # ------------------ LEFT: link & total bandwidth ------------------
-        left_group = QGroupBox("Link & Bandwidth")
-        left_grid = QGridLayout(left_group)
-        left_grid.setContentsMargins(8, 8, 8, 8)
-        left_grid.setHorizontalSpacing(10)
-        left_grid.setVerticalSpacing(10)
+        # ================= TOP: Link & Total Bandwidth =================
+        link_group = QGroupBox("Link & Bandwidth")
+        link_grid = QGridLayout(link_group)
+        link_grid.setContentsMargins(8, 8, 8, 8)
+        link_grid.setHorizontalSpacing(10)
+        link_grid.setVerticalSpacing(8)
 
         # Row 0: Status
         lbl_status = QLabel("Status:")
         self.val_status = QLabel("OFFLINE")  # placeholder
-        left_grid.addWidget(lbl_status, 0, 0)
-        left_grid.addWidget(self.val_status, 0, 1)
+        link_grid.addWidget(lbl_status, 0, 0)
+        link_grid.addWidget(self.val_status, 0, 1)
 
         # Row 1: Total Bandwidth
         lbl_total_bw = QLabel("Total Bandwidth:")
         self.val_total_bw = QLabel("--- Mbps")
-        left_grid.addWidget(lbl_total_bw, 1, 0)
-        left_grid.addWidget(self.val_total_bw, 1, 1)
+        link_grid.addWidget(lbl_total_bw, 1, 0)
+        link_grid.addWidget(self.val_total_bw, 1, 1)
 
         # Row 2: Camera Feed Usage (aggregate text)
         lbl_cam_usage = QLabel("Camera Feed Usage:")
         self.val_cam_usage = QLabel("--- Mbps")
-        left_grid.addWidget(lbl_cam_usage, 2, 0)
-        left_grid.addWidget(self.val_cam_usage, 2, 1)
+        link_grid.addWidget(lbl_cam_usage, 2, 0)
+        link_grid.addWidget(self.val_cam_usage, 2, 1)
 
         # Row 3: Usage meter (progress bar)
         lbl_usage_meter = QLabel("Usage Meter:")
         self.usage_bar = QProgressBar()
         self.usage_bar.setRange(0, 100)  # 0–100%
         self.usage_bar.setValue(0)
-        left_grid.addWidget(lbl_usage_meter, 3, 0)
-        left_grid.addWidget(self.usage_bar, 3, 1)
+        link_grid.addWidget(lbl_usage_meter, 3, 0)
+        link_grid.addWidget(self.usage_bar, 3, 1)
 
-        # ------------------ RIGHT: per-camera controls ------------------
+        main_layout.addWidget(link_group)
+
+        # ----- Thin separator line between top and bottom parts -----
+        divider = QFrame()
+        divider.setFrameShape(QFrame.HLine)
+        divider.setFrameShadow(QFrame.Sunken)
+        main_layout.addWidget(divider)
+
+        # ================= BOTTOM: Per-camera controls =================
         cam_group = QGroupBox("Camera Feeds")
         cam_grid = QGridLayout(cam_group)
         cam_grid.setContentsMargins(8, 8, 8, 8)
         cam_grid.setHorizontalSpacing(10)
         cam_grid.setVerticalSpacing(8)
 
-        # You can rename these to match exactly what's in the PDF
         camera_rows = [
             ("Front Cam", "front"),
             ("Rear Cam", "rear"),
@@ -88,9 +96,9 @@ class BandwidthMonitorView(QWidget):
             lbl_cam = QLabel(label_text)
 
             toggle = QCheckBox("On")
-            toggle.setChecked(False)  # default off
+            toggle.setChecked(False)
 
-            usage_lbl = QLabel("-- Mbps")  # per-camera bandwidth usage
+            usage_lbl = QLabel("-- Mbps")
 
             cam_grid.addWidget(lbl_cam, row, 0)
             cam_grid.addWidget(toggle, row, 1)
@@ -99,44 +107,7 @@ class BandwidthMonitorView(QWidget):
             self.cam_toggles[key] = toggle
             self.cam_usage_labels[key] = usage_lbl
 
-        # ------------------ Combine left + right into one row ------------------
-        content_layout = QHBoxLayout()
-        content_layout.setSpacing(16)
-
-        content_layout.addWidget(left_group)
-
-        # vertical line between the two groups (for visual division)
-        divider = QWidget()
-        divider.setFixedWidth(1)
-        divider.setStyleSheet("background-color: #555;")
-        content_layout.addWidget(divider)
-
-        content_layout.addWidget(cam_group)
-
-        main_layout.addLayout(content_layout)
-        main_layout.addStretch()
-
-
-class CameraManagementView(QWidget):
-    """
-    Top-right view: Camera Management (placeholder for now, you can extend later).
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(8, 8, 8, 8)
-        main_layout.setSpacing(10)
-
-        title = QLabel("Camera Management")
-        title.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        main_layout.addWidget(title)
-
-        placeholder = QLabel("Camera Management Controls Here")
-        placeholder.setAlignment(Qt.AlignCenter)
-        main_layout.addWidget(placeholder)
-
+        main_layout.addWidget(cam_group)
         main_layout.addStretch()
 
 
@@ -153,24 +124,24 @@ class CommsWindow(QMainWindow):
         root_layout.setContentsMargins(0, 0, 0, 0)
         root_layout.setSpacing(0)
 
-        # ---- Vertical splitter: top (row) / bottom (row) ----
-        vertical_splitter = QSplitter(Qt.Orientation.Vertical)
+        # ---- Vertical splitter: top row / bottom row ----
+        self.vertical_splitter = QSplitter(Qt.Orientation.Vertical)
 
         # ---- Top row: left/right ----
-        top_horizontal_splitter = QSplitter(Qt.Orientation.Horizontal)
+        self.top_horizontal_splitter = QSplitter(Qt.Orientation.Horizontal)
 
-        # TOP-LEFT: Bandwidth Monitor view (now with camera usage on the right)
+        # TOP-LEFT: Bandwidth + Cameras (stacked)
         top_left = BandwidthMonitorView()
 
-        # TOP-RIGHT: for now, placeholder (e.g., cFS logs)
+        # TOP-RIGHT: placeholder (e.g., cFS Logs)
         top_right = QLabel("Top Right (cFS Logs)")
         top_right.setAlignment(Qt.AlignCenter)
 
-        top_horizontal_splitter.addWidget(top_left)
-        top_horizontal_splitter.addWidget(top_right)
+        self.top_horizontal_splitter.addWidget(top_left)
+        self.top_horizontal_splitter.addWidget(top_right)
 
         # ---- Bottom row: left/right ----
-        bottom_horizontal_splitter = QSplitter(Qt.Orientation.Horizontal)
+        self.bottom_horizontal_splitter = QSplitter(Qt.Orientation.Horizontal)
 
         bottom_left = QLabel("Bottom Left")
         bottom_left.setAlignment(Qt.AlignCenter)
@@ -178,15 +149,19 @@ class CommsWindow(QMainWindow):
         bottom_right = QLabel("Bottom Right")
         bottom_right.setAlignment(Qt.AlignCenter)
 
-        bottom_horizontal_splitter.addWidget(bottom_left)
-        bottom_horizontal_splitter.addWidget(bottom_right)
+        self.bottom_horizontal_splitter.addWidget(bottom_left)
+        self.bottom_horizontal_splitter.addWidget(bottom_right)
 
         # Assemble vertical splitter
-        vertical_splitter.addWidget(top_horizontal_splitter)
-        vertical_splitter.addWidget(bottom_horizontal_splitter)
+        self.vertical_splitter.addWidget(self.top_horizontal_splitter)
+        self.vertical_splitter.addWidget(self.bottom_horizontal_splitter)
 
         # Add to root layout
-        root_layout.addWidget(vertical_splitter)
+        root_layout.addWidget(self.vertical_splitter)
+
+        # Add shared bottom bar
+        self.bottom_bar = BottomBarView(self)
+        root_layout.addWidget(self.bottom_bar)
 
         # ---- Make the quadrant divisions visually obvious ----
         splitter_style = """
@@ -202,10 +177,29 @@ class CommsWindow(QMainWindow):
         """
         self.setStyleSheet(splitter_style)
 
-        # Optional initial sizes
-        vertical_splitter.setSizes([250, 250])            # top vs bottom
-        top_horizontal_splitter.setSizes([400, 400])      # top-left vs top-right
-        bottom_horizontal_splitter.setSizes([400, 400])   # bottom-left vs bottom-right
+        # Set equal stretch factors (helps keep things balanced on resize)
+        self.vertical_splitter.setStretchFactor(0, 1)
+        self.vertical_splitter.setStretchFactor(1, 1)
+        self.top_horizontal_splitter.setStretchFactor(0, 1)
+        self.top_horizontal_splitter.setStretchFactor(1, 1)
+        self.bottom_horizontal_splitter.setStretchFactor(0, 1)
+        self.bottom_horizontal_splitter.setStretchFactor(1, 1)
+
+        # IMPORTANT: set initial sizes AFTER the window is laid out
+        QTimer.singleShot(0, self._set_initial_split_sizes)
+
+    def _set_initial_split_sizes(self):
+        """Force an even 2x2 split once the window has a real size."""
+        h = max(self.vertical_splitter.height(), 1)
+        w_top = max(self.top_horizontal_splitter.width(), 1)
+        w_bottom = max(self.bottom_horizontal_splitter.width(), 1)
+
+        # Top vs bottom
+        self.vertical_splitter.setSizes([h // 2, h // 2])
+        # Left vs right (top row)
+        self.top_horizontal_splitter.setSizes([w_top // 2, w_top // 2])
+        # Left vs right (bottom row)
+        self.bottom_horizontal_splitter.setSizes([w_bottom // 2, w_bottom // 2])
 
 
 if __name__ == "__main__":
