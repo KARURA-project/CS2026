@@ -7,6 +7,7 @@ class ROSManager:
 
     def __init__(self, node_classes: list, gui_callbacks: dict):
 
+
         rclpy.init()
         self.executor = MultiThreadedExecutor()
         self.nodes = []
