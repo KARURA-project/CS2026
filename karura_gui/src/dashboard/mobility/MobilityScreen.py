@@ -1,12 +1,12 @@
-# -*- coding: utf-8 -*-
+# # -*- coding: utf-8 -*-
 
-################################################################################
-## Form generated from reading UI file 'MobilityScreen.ui'
-##
-## Created by: Qt User Interface Compiler version 6.10.0
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
+# ################################################################################
+# ## Form generated from reading UI file 'MobilityScreen.ui'
+# ##
+# ## Created by: Qt User Interface Compiler version 6.10.0
+# ##
+# ## WARNING! All changes made in this file will be lost when recompiling UI file!
+# ################################################################################
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
@@ -17,67 +17,202 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
     QMainWindow, QMenuBar, QSizePolicy, QStatusBar,
-    QVBoxLayout, QWidget)
+    QVBoxLayout, QWidget, QSplitter)
 
 from widgets import MotorInfoPanel, MainCameraPanel, MobilityControls, IMUWidget
 from custom_widgets.Camera import VideoWidget
 from custom_widgets.Terminal import PrimitiveTerminalWidget, DEFAULT_TTY_CMD
+
+# class Ui_MainWindow(object):
+#     def setupUi(self, MainWindow):
+#         if not MainWindow.objectName():
+#             MainWindow.setObjectName(u"MainWindow")
+#         MainWindow.resize(1024, 768)
+#         MainWindow.setMinimumSize(QSize(900, 600))
+#         self.centralwidget = QWidget(MainWindow)
+#         self.centralwidget.setObjectName(u"centralwidget")
+#         self.horizontalLayout = QHBoxLayout(self.centralwidget)
+#         self.horizontalLayout.setObjectName(u"horizontalLayout")
+
+#         # Left Panel (Telemetry)
+#         self.leftgroup = QFrame(self.centralwidget)
+#         self.leftgroup.setObjectName(u"leftgroup")
+#         self.leftgroup.setMinimumSize(QSize(300, 550))
+#         self.leftgroup.setMaximumSize(QSize(500, 16777215))
+#         self.leftgroup.setFrameShape(QFrame.Shape.StyledPanel)
+#         self.leftgroup.setFrameShadow(QFrame.Shadow.Raised)
+#         self.verticalLayout = QVBoxLayout(self.leftgroup)
+#         self.verticalLayout.setObjectName(u"verticalLayout")
+#         self.verticalLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+#         # Secondary Camera Panel (on the left)
+#         self.SecondaryCam = VideoWidget(None, 1)
+#         self.SecondaryCam.setObjectName(u"frame_3")
+#         self.SecondaryCam.setMaximumSize(QSize(360, 360))
+#         self.verticalLayout.addWidget(self.SecondaryCam)
+
+#         # IMU Data Panel
+#         self.IMU = IMUWidget(self.leftgroup)
+#         self.IMU.setObjectName(u"IMUWidget")
+#         self.IMU.setMinimumSize(QSize(0, 400))
+#         self.verticalLayout.addWidget(self.IMU)
+
+#         # Battery Data Panel
+#         self.BatteryData = MotorInfoPanel(self.leftgroup)
+#         self.BatteryData.setObjectName(u"BatteryData")
+#         self.BatteryData.setMinimumSize(QSize(200, 200))
+#         self.BatteryData.add_battery()
+#         self.BatteryData.add_battery()
+#         self.BatteryData.add_battery()
+#         self.BatteryData.add_battery()
+#         self.BatteryData.add_battery()
+#         self.BatteryData.add_battery()
+#         self.verticalLayout.addWidget(self.BatteryData)
+
+#         self.horizontalLayout.addWidget(self.leftgroup)
+
+#         # Central Panel (Camera Views & Controls)
+#         self.centralgroup = QFrame(self.centralwidget)
+#         self.centralgroup.setObjectName(u"centralgroup")
+#         self.centralgroup.setMinimumSize(QSize(400, 550))
+#         self.centralgroup.setSizeIncrement(QSize(100, 0))
+#         self.centralgroup.setFrameShape(QFrame.Shape.StyledPanel)
+#         self.centralgroup.setFrameShadow(QFrame.Shadow.Raised)
+#         self.verticalLayout_4 = QVBoxLayout(self.centralgroup)
+#         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+
+#         # Top Row: Main Camera + Secondary Camera (even width, centered)
+#         self.cameraLayout = QHBoxLayout()
+#         self.maincameravideo = VideoWidget(None, 0)
+#         self.maincameravideo.setObjectName(u"maincameravideo")
+#         self.maincameravideo.setMaximumSize(QSize(640, 360))
+
+#         # Adjust the secondary camera to match the size and position next to main camera
+#         self.SecondaryCam.setMaximumSize(QSize(640, 360))
+
+#         self.cameraLayout.addWidget(self.maincameravideo)
+#         self.cameraLayout.addWidget(self.SecondaryCam)
+#         self.cameraLayout.setSpacing(10)
+#         self.cameraLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+#         self.verticalLayout_4.addLayout(self.cameraLayout)
+
+#         # Main Camera Panel (below camera views)
+#         self.maincamerapanel = MainCameraPanel(self.centralgroup)
+#         self.maincamerapanel.setObjectName(u"maincamerapanel")
+#         self.maincamerapanel.setMaximumSize(QSize(300, 150))
+#         self.verticalLayout_4.addWidget(self.maincamerapanel)
+
+#         self.horizontalLayout.addWidget(self.centralgroup)
+
+#         # Right Panel (Aerial Info & Terminal)
+#         self.rightgroup = QFrame(self.centralwidget)
+#         self.rightgroup.setObjectName(u"rightgroup")
+#         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+#         sizePolicy1.setHorizontalStretch(0)
+#         sizePolicy1.setVerticalStretch(0)
+#         sizePolicy1.setHeightForWidth(self.rightgroup.sizePolicy().hasHeightForWidth())
+#         self.rightgroup.setSizePolicy(sizePolicy1)
+#         self.rightgroup.setMinimumSize(QSize(300, 550))
+#         self.rightgroup.setMaximumSize(QSize(400, 16777215))
+#         self.rightgroup.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
+#         self.rightgroup.setStyleSheet(u"align-items: center;")
+#         self.rightgroup.setFrameShape(QFrame.Shape.StyledPanel)
+#         self.rightgroup.setFrameShadow(QFrame.Shadow.Raised)
+#         self.rightgroupLayout = QVBoxLayout(self.rightgroup)
+#         self.verticalLayout_2 = QVBoxLayout(self.rightgroup)
+#         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+#         self.verticalLayout_2.setContentsMargins(0, -1, 0, -1)
+#         self.groupBox = QGroupBox(self.rightgroup)
+#         self.groupBox.setObjectName(u"groupBox")
+#         self.groupBox.setMinimumSize(QSize(300, 360))
+#         self.groupBox.setMaximumSize(QSize(300, 360))
+#         self.verticalLayout_3 = QVBoxLayout(self.groupBox)
+#         self.verticalLayout_3.setSpacing(0)
+#         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+#         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+
+#         # Aerial Image & Info
+#         self.AerialImg = QFrame(self.groupBox)
+#         self.AerialImg.setObjectName(u"AerialImg")
+#         self.AerialImg.setMinimumSize(QSize(0, 300))
+#         self.AerialImg.setMaximumSize(QSize(300, 300))
+#         self.AerialImg.setStyleSheet(u"align-items: center;")
+#         self.AerialImg.setFrameShape(QFrame.Shape.StyledPanel)
+#         self.AerialImg.setFrameShadow(QFrame.Shadow.Raised)
+
+#         self.verticalLayout_3.addWidget(self.AerialImg)
+
+#         self.AerialInfo = QFrame(self.groupBox)
+#         self.AerialInfo.setObjectName(u"AerialInfo")
+#         self.AerialInfo.setMinimumSize(QSize(0, 40))
+#         self.AerialInfo.setMaximumSize(QSize(16777215, 40))
+#         self.AerialInfo.setFrameShape(QFrame.Shape.StyledPanel)
+#         self.AerialInfo.setFrameShadow(QFrame.Shadow.Raised)
+
+#         self.verticalLayout_3.addWidget(self.AerialInfo)
+
+#         self.verticalLayout_2.addWidget(self.groupBox)
+#         self.horizontalLayout.addWidget(self.rightgroup)
+
+#         MainWindow.setCentralWidget(self.centralwidget)
+#         self.menubar = QMenuBar(MainWindow)
+#         self.menubar.setObjectName(u"menubar")
+#         self.menubar.setGeometry(QRect(0, 0, 1024, 19))
+#         MainWindow.setMenuBar(self.menubar)
+#         self.statusbar = QStatusBar(MainWindow)
+#         self.statusbar.setObjectName(u"statusbar")
+#         MainWindow.setStatusBar(self.statusbar)
+
+#         self.retranslateUi(MainWindow)
+
+#         QMetaObject.connectSlotsByName(MainWindow)
+
+#     def retranslateUi(self, MainWindow):
+#         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+#         self.groupBox.setTitle("")
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(1024, 768)
-        MainWindow.setMinimumSize(QSize(900, 600))
+        MainWindow.setMinimumSize(QSize(1300, 1000))
+
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.horizontalLayout = QHBoxLayout(self.centralwidget)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
+
+        # --- Replace the main HBox layout with a horizontal splitter ---
+        self.rootLayout = QHBoxLayout(self.centralwidget)
+        self.rootLayout.setObjectName(u"rootLayout")
+
+        self.splitter = QSplitter(Qt.Orientation.Horizontal, self.centralwidget)
+        self.splitter.setObjectName(u"mainSplitter")
+        self.rootLayout.addWidget(self.splitter)
+
+        # =========================
+        # Left Panel (Telemetry)
+        # =========================
         self.leftgroup = QFrame(self.centralwidget)
         self.leftgroup.setObjectName(u"leftgroup")
-        self.leftgroup.setMinimumSize(QSize(300, 550))
-        self.leftgroup.setMaximumSize(QSize(500, 16777215))
+        self.leftgroup.setMinimumSize(QSize(250, 550))
+        self.leftgroup.setMaximumSize(QSize(600, 16777215))  # optional cap
         self.leftgroup.setFrameShape(QFrame.Shape.StyledPanel)
         self.leftgroup.setFrameShadow(QFrame.Shadow.Raised)
+
         self.verticalLayout = QVBoxLayout(self.leftgroup)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.SecondaryCam = QFrame(self.leftgroup)
-        self.SecondaryCam.setObjectName(u"SecondaryCam")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.SecondaryCam.sizePolicy().hasHeightForWidth())
-        # self.SecondaryCam.setSizePolicy(sizePolicy)
-        # self.SecondaryCam.setMinimumSize(QSize(100, 100))
-        # self.SecondaryCam.setMaximumSize(QSize(150, 150))
-        # self.SecondaryCam.setFrameShape(QFrame.Shape.StyledPanel)
-        # self.SecondaryCam.setFrameShadow(QFrame.Shadow.Raised)
 
-        self.SecondaryCam = VideoWidget(None, 1)
-        self.SecondaryCam.setObjectName(u"frame_3")
-        self.SecondaryCam.setMaximumSize(QSize(360,360)) 
+        # REMOVE SecondaryCam entirely (do not create it)
 
-
-        self.verticalLayout.addWidget(self.SecondaryCam)
-
-        # self.IMU = QFrame(self.leftgroup)
-        # self.IMU.setObjectName(u"IMU")
-        # self.IMU.setMinimumSize(QSize(0, 400))
-        # self.IMU.setFrameShape(QFrame.Shape.StyledPanel)
-        # self.IMU.setFrameShadow(QFrame.Shadow.Raised)
-
+        # IMU Data Panel
         self.IMU = IMUWidget(self.leftgroup)
         self.IMU.setObjectName(u"IMUWidget")
         self.IMU.setMinimumSize(QSize(0, 400))
-
         self.verticalLayout.addWidget(self.IMU)
 
-        # self.BatteryData = QFrame(self.leftgroup)
-        # self.BatteryData.setObjectName(u"BatteryData")
-        # self.BatteryData.setMinimumSize(QSize(0, 200))
-        # self.BatteryData.setFrameShape(QFrame.Shape.StyledPanel)
-        # self.BatteryData.setFrameShadow(QFrame.Shadow.Raised)
+        # Battery Data Panel
         self.BatteryData = MotorInfoPanel(self.leftgroup)
         self.BatteryData.setObjectName(u"BatteryData")
         self.BatteryData.setMinimumSize(QSize(200, 200))
@@ -89,123 +224,75 @@ class Ui_MainWindow(object):
         self.BatteryData.add_battery()
         self.verticalLayout.addWidget(self.BatteryData)
 
+        # Add left panel to splitter
+        self.splitter.addWidget(self.leftgroup)
 
-        self.horizontalLayout.addWidget(self.leftgroup)
-
-        #This represents the central group
+        # =========================
+        # Central Panel (Camera + Controls)
+        # =========================
         self.centralgroup = QFrame(self.centralwidget)
         self.centralgroup.setObjectName(u"centralgroup")
         self.centralgroup.setMinimumSize(QSize(400, 550))
-        self.centralgroup.setSizeIncrement(QSize(100, 0))
         self.centralgroup.setFrameShape(QFrame.Shape.StyledPanel)
         self.centralgroup.setFrameShadow(QFrame.Shadow.Raised)
+
         self.verticalLayout_4 = QVBoxLayout(self.centralgroup)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        # self.frame_2 = QFrame(self.centralgroup)
-        # self.frame_2.setObjectName(u"frame_2")
-        # self.frame_2.setMaximumSize(QSize(400, 300))
-        # self.frame_2.setFrameShape(QFrame.Shape.StyledPanel)
-        # self.frame_2.setFrameShadow(QFrame.Shadow.Raised)
 
-        #This initalizes the main camera panel
-        self.maincamerapanel = MainCameraPanel(self.centralgroup)
-        self.maincamerapanel.setObjectName(u"maincamerapanel")
-        self.maincamerapanel.setMaximumSize(QSize(300,150))
-
-        # self.frame = QFrame(self.centralgroup)
-        # self.frame.setObjectName(u"frame")
-        # self.frame.setMaximumSize(QSize(300, 300))
-        # self.frame.setFrameShape(QFrame.Shape.StyledPanel)
-        # self.frame.setFrameShadow(QFrame.Shadow.Raised)
-
-        #This initalizes the mobility controls panel
-        self.mobilitycontrols = MobilityControls(self.centralgroup)
-        self.mobilitycontrols.setObjectName(u"mobilitycontrols")
-        self.mobilitycontrols.setMaximumSize(QSize(400,300))
-
-        #This initalizes the main camera video widget
+        # Single BIG camera view (resizable)
         self.maincameravideo = VideoWidget(None, 0)
         self.maincameravideo.setObjectName(u"maincameravideo")
-        self.maincameravideo.setMaximumSize(QSize(640,360)) 
 
+        # Make it expand to available space
+        camPolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.maincameravideo.setSizePolicy(camPolicy)
+
+        # IMPORTANT: remove tight max size so it can grow
+        self.maincameravideo.setMaximumSize(QSize(16777215, 16777215))
 
         self.verticalLayout_4.addWidget(self.maincameravideo)
-        self.verticalLayout_4.addWidget(self.maincamerapanel)
-        self.verticalLayout_4.addWidget(self.mobilitycontrols)
-        self.horizontalLayout.addWidget(self.centralgroup)
-        self.horizontalLayout.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
-        self.rightgroup = QFrame(self.centralwidget)
-        self.rightgroup.setObjectName(u"rightgroup")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.rightgroup.sizePolicy().hasHeightForWidth())
-        self.rightgroup.setSizePolicy(sizePolicy1)
-        self.rightgroup.setMinimumSize(QSize(300, 550))
-        self.rightgroup.setMaximumSize(QSize(400, 16777215))
-        self.rightgroup.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-        self.rightgroup.setStyleSheet(u"align-items: center;")
-        self.rightgroup.setFrameShape(QFrame.Shape.StyledPanel)
-        self.rightgroup.setFrameShadow(QFrame.Shadow.Raised)
-        self.rightgroupLayout = QVBoxLayout(self.rightgroup)
-        self.verticalLayout_2 = QVBoxLayout(self.rightgroup)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(0, -1, 0, -1)
-        self.groupBox = QGroupBox(self.rightgroup)
-        self.groupBox.setObjectName(u"groupBox")
-        self.groupBox.setMinimumSize(QSize(300, 360))
-        self.groupBox.setMaximumSize(QSize(300, 360))
-        self.verticalLayout_3 = QVBoxLayout(self.groupBox)
-        self.verticalLayout_3.setSpacing(0)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.AerialImg = QFrame(self.groupBox)
-        self.AerialImg.setObjectName(u"AerialImg")
-        self.AerialImg.setMinimumSize(QSize(0, 300))
-        self.AerialImg.setMaximumSize(QSize(300, 300))
-        self.AerialImg.setStyleSheet(u"align-items: center;")
-        self.AerialImg.setFrameShape(QFrame.Shape.StyledPanel)
-        self.AerialImg.setFrameShadow(QFrame.Shadow.Raised) 
+        # Main Camera Panel (below camera)
+        # Add camera FIRST and make it the thing that grows
+        self.verticalLayout_4.addWidget(self.maincameravideo, 1)  # stretch=1
 
-        self.verticalLayout_3.addWidget(self.AerialImg)
+        # Main Camera Panel (below camera) -> keep it compact
+        self.maincamerapanel = MainCameraPanel(self.centralgroup)
+        self.maincamerapanel.setObjectName(u"maincamerapanel")
 
-        self.AerialInfo = QFrame(self.groupBox)
-        self.AerialInfo.setObjectName(u"AerialInfo")
-        self.AerialInfo.setMinimumSize(QSize(0, 40))
-        self.AerialInfo.setMaximumSize(QSize(16777215, 40))
-        self.AerialInfo.setFrameShape(QFrame.Shape.StyledPanel)
-        self.AerialInfo.setFrameShadow(QFrame.Shadow.Raised)
+        panelPolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.maincamerapanel.setSizePolicy(panelPolicy)
+        self.maincamerapanel.setMinimumHeight(160)   # tune this
+        self.maincamerapanel.setMaximumHeight(220)   # tune this
 
-        self.verticalLayout_3.addWidget(self.AerialInfo)
+        self.verticalLayout_4.addWidget(self.maincamerapanel, 0)  # stretch=0
 
-        self.Terminal = PrimitiveTerminalWidget()
-        self.Terminal.spawn(DEFAULT_TTY_CMD) #Spawns terminal
-        self.verticalLayout_3.addWidget(self.Terminal)
+        # Make sure the layout stretches the camera area, not the panel
+        self.verticalLayout_4.setStretch(0, 1)  # camera grows
+        self.verticalLayout_4.setStretch(1, 0)  # panel stays small
 
 
-        self.verticalLayout_2.addWidget(self.groupBox)
+        # Add central panel to splitter
+        self.splitter.addWidget(self.centralgroup)
 
+        # OPTIONAL: set initial widths (left, center)
+        self.splitter.setSizes([320, 704])
 
-        self.horizontalLayout.addWidget(self.rightgroup)
-    
+        # --- Right panel removed بالكامل (do not create rightgroup) ---
 
         MainWindow.setCentralWidget(self.centralwidget)
+
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 1024, 19))
         MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QStatusBar(MainWindow)
-        self.statusbar.setObjectName(u"statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+
+        # self.statusbar = QStatusBar(MainWindow)
+        # self.statusbar.setObjectName(u"statusbar")
+        # MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-
         QMetaObject.connectSlotsByName(MainWindow)
-    # setupUi
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.groupBox.setTitle("")
-    # retranslateUi
-

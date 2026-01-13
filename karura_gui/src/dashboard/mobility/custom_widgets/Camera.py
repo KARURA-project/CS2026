@@ -52,8 +52,8 @@ class CameraWorker(QThread):
             return
 
         # Set properties (as per original request)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1040)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 980)
         # Setting MJPG is good practice for performance, though not always required
         self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
 

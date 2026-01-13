@@ -1,7 +1,6 @@
 from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QSizePolicy, QVBoxLayout
 import PySide6.QtCore
 from custom_widgets.MotorInfoBox import Ui_MotorInfoBox
-from custom_widgets.NetworkStatus import Ui_NetworkStatus
 from custom_widgets.CameraSwitchButton import Ui_CameraSwitchButton
 from custom_widgets.MobilityControls import Ui_MobilityControls
 from custom_widgets.IMUWidget import Ui_IMUWidget
@@ -16,13 +15,13 @@ class MotorInfoBox(QWidget):
         self.ui = Ui_MotorInfoBox()
         self.ui.setupUi(self)
 
-class NetworkStatus(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+# class NetworkStatus(QWidget):
+#     def __init__(self, parent=None):
+#         super().__init__(parent)
 
-        #Sets the UI to use the one made by designer
-        self.ui = Ui_NetworkStatus()
-        self.ui.setupUi(self)
+#         #Sets the UI to use the one made by designer
+#         self.ui = Ui_NetworkStatus()
+#         self.ui.setupUi(self)
 
 
 class CameraSwitchButton(QWidget):
@@ -70,10 +69,10 @@ class MainCameraPanel(QWidget):
         layout.setContentsMargins(0,0,0,0)  # optional: flush edges
 
         self.camera_switch_button = CameraSwitchButton()
-        self.network_status = NetworkStatus()
+        # self.network_status = NetworkStatus()
 
         layout.addWidget(self.camera_switch_button)
-        layout.addWidget(self.network_status)
+        # layout.addWidget(self.network_status)
         
         self.setLayout(layout)
         self.setMaximumWidth(200)
