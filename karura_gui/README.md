@@ -76,3 +76,12 @@ karura_gui/
             ├── window.py      # ArmMainWindow
             ├── widgets.py
             └── view_model.py
+```
+
+## 3. How to run
+
+To run main_mobility.py:
+1. Go to ./CS2026
+2. Run the source .venv/bin/activate
+3. CD to ./CS2026/karura_gui/src
+4. Run python3 -m dashboard.main_mobility

@@ -1,9 +1,9 @@
 from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QSizePolicy, QVBoxLayout
 import PySide6.QtCore
-from custom_widgets.MotorInfoBox import Ui_MotorInfoBox
-from custom_widgets.CameraSwitchButton import Ui_CameraSwitchButton
-from custom_widgets.MobilityControls import Ui_MobilityControls
-from custom_widgets.IMUWidget import Ui_IMUWidget
+from .custom_widgets.MotorInfoBox import Ui_MotorInfoBox
+from .custom_widgets.CameraSwitchButton import Ui_CameraSwitchButton
+from .custom_widgets.MobilityControls import Ui_MobilityControls
+from .custom_widgets.IMUWidget import Ui_IMUWidget
 import math
 
 #Initalizes QT widgets

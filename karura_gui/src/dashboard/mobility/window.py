@@ -1,7 +1,7 @@
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget
-from widgets import MainCameraPanel, MotorInfoPanel
-from MobilityScreen import Ui_MainWindow
+from .widgets import MainCameraPanel, MotorInfoPanel
+from .MobilityScreen import Ui_MainWindow
 from PySide6.QtCore import QTimer
 import time
 import random

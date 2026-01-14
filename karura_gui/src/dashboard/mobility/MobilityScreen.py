@@ -19,9 +19,9 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
     QMainWindow, QMenuBar, QSizePolicy, QStatusBar,
     QVBoxLayout, QWidget, QSplitter)
 
-from widgets import MotorInfoPanel, MainCameraPanel, MobilityControls, IMUWidget
-from custom_widgets.Camera import VideoWidget
-from custom_widgets.Terminal import PrimitiveTerminalWidget, DEFAULT_TTY_CMD
+from .widgets import MotorInfoPanel, MainCameraPanel, MobilityControls, IMUWidget
+from .custom_widgets.Camera import VideoWidget
+from .custom_widgets.Terminal import PrimitiveTerminalWidget, DEFAULT_TTY_CMD
 
 # class Ui_MainWindow(object):
 #     def setupUi(self, MainWindow):
