@@ -18,7 +18,7 @@ class MobilityBridge(BaseROS2Bridge):
     actual_rads_signal = Signal(Float64MultiArray)
     roll_pitch_yaw_signal = Signal(Float64MultiArray)
     odometry_filtered_signal = Signal(Odometry)
-    bandwidth_filtered_signal = Signal(Float64)
+    bandwidth_signal = Signal(Float64)
     battery_data_signal = Signal(Int32)
     navigation_status_signal = Signal(String)
     fisheye_cam_signal = Signal(String)
@@ -46,64 +46,65 @@ class MobilityBridge(BaseROS2Bridge):
         self.ros_error.connect(self._on_ros_error)
 
     
-    #TODO implement the _emit commands.
     def _emit_mobility_status(self, msg: String):
         try:
-            self.mobility_status.emit(msg)
+            print("[Bridge] mobility_status:", getattr(msg, "data", msg))
+            self.mobility_status_signal.emit(msg)
         except Exception as e:
+            print("[Bridge] ERROR mobility_status: ", e)
             self.error_signal.emit(f"Error emitting mobility_status: {e}")
 
     def _emit_actual_rads(self, msg: Float64MultiArray):
         try:
-            self.actual_rads.emit(msg)
+            self.actual_rads_signal.emit(msg)
         except Exception as e:
             self.error_signal.emit(f"Error emitting actual_rads: {e}")
 
     def _emit_roll_pitch_yaw(self, msg: Float64MultiArray):
         try:
-            self.roll_pitch_yaw.emit(msg)
+            self.roll_pitch_yaw_signal.emit(msg)
         except Exception as e:
             self.error_signal.emit(f"Error emitting roll_pitch_yaw: {e}")
 
     def _emit_odometry_filtered(self, msg: Odometry):
         try:
-            self.odometry_filtered.emit(msg)
+            self.odometry_filtered_signal.emit(msg)
         except Exception as e:
             self.error_signal.emit(f"Error emitting odometry_filtered: {e}")
 
     def _emit_bandwidth(self, msg: Float64):
         try:
-            self.bandwidth.emit(msg)
+            self.bandwidth_signal.emit(msg)
         except Exception as e:
             self.error_signal.emit(f"Error emitting bandwidth: {e}")
 
     def _emit_battery_data(self, msg: Int32):
         try:
-            self.battery_data.emit(msg)
+            self.battery_data_signal.emit(msg)
         except Exception as e:
             self.error_signal.emit(f"Error emitting battery_data: {e}")
 
     def _emit_navigation_status(self, msg: String):
         try:
-            self.navigation_status.emit(msg)
+            self.navigation_status_signal.emit(msg)
         except Exception as e:
             self.error_signal.emit(f"Error emitting navigation_status: {e}")
 
     def _emit_fisheye_cam(self, msg: String):
         try:
-            self.fisheye_cam.emit(msg)
+            self.fisheye_cam_signal.emit(msg)
         except Exception as e:
             self.error_signal.emit(f"Error emitting fisheye_cam: {e}")
 
     def _emit_gps_map(self, msg: Float64MultiArray):
         try:
-            self.gps_map.emit(msg)
+            self.gps_map_signal.emit(msg)
         except Exception as e:
             self.error_signal.emit(f"Error emitting gps_map: {e}")
 
     def _emit_gps_data(self, msg: NavSatFix):
         try:
-            self.gps_data.emit(msg)
+            self.gps_data_signal.emit(msg)
         except Exception as e:
             self.error_signal.emit(f"Error emitting gps_data: {e}")
 

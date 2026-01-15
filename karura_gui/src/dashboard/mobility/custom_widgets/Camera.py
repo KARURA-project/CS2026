@@ -91,7 +91,7 @@ class VideoWidget(QWidget):
     The main widget that displays the video feed.
     """
     def __init__(self, parent=None, camera_id = 0):
-        super().__init__()
+        super().__init__(parent)
         self.setWindowTitle("PySide6 OpenCV Camera Feed")
         # self.setMinimumSize(640, 480)
 
@@ -106,15 +106,30 @@ class VideoWidget(QWidget):
         self.layout.addWidget(self.video_label)
 
         # Initialize the worker thread
+        self.thread = QThread(self)
         self.camera_worker = CameraWorker(None, camera_id)
+        self.camera_worker.moveToThread(self.thread)
+        self.thread.started.connect(self.camera_worker.run)
 
         # Connect signals from the worker thread
         self.camera_worker.frame_ready.connect(self.update_image)
         self.camera_worker.error_occurred.connect(self.handle_camera_error)
 
-        # Start the worker thread
-        self.camera_worker.start()
-        print("Main UI: CameraWorker thread started.")
+        self.camera_worker.finished.connect(self.thread.quit)
+        self.camera_worker.finished.connect(self.camera_worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+
+
+    # Start the worker thread
+    def start_camera(self):
+        if not self.thread.isRunning():
+            self.thread.start()
+    
+    def stop_camera(self):
+        if self.thread.isRunning():
+            self.camera_worker.stop()
+            self.thread.quit()
+            self.thread.wait()
 
     @Slot(np.ndarray)
     def update_image(self, cv_img):
@@ -160,14 +175,15 @@ class VideoWidget(QWidget):
         """
         Ensure the worker thread is stopped when the main window is closed.
         """
-        if self.camera_worker and self.camera_worker.isRunning():
-            print("Main UI: Stopping CameraWorker thread...")
-            self.camera_worker.stop()
+        # if self.camera_worker and self.camera_worker.isRunning():
+        #     print("Main UI: Stopping CameraWorker thread...")
+            # self.camera_worker.stop()
+        self.stop_camera()
         event.accept()
 
 # --- 3. Main Application Entry Point ---
 
-if __name__ == '__main__':
+def main():
     # PySide6 application boilerplate
     app = QApplication(sys.argv)
     
@@ -180,3 +196,7 @@ if __name__ == '__main__':
     
     # Start the event loop
     sys.exit(app.exec())
+
+if __name__ == '__main__':
+    main()
+    
