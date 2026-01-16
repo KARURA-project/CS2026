@@ -2,7 +2,7 @@ import sys
 from PySide6.QtWidgets import QApplication, QMessageBox
 import traceback
 from karura_gui.mobility import MobilityMainWindow, MobilityBridge
-raise RuntimeError("SENTINEL: dashboard.main-mobility is running")
+# raise RuntimeError("SENTINEL: dashboard.main-mobility is running")
 
 
 def main():
