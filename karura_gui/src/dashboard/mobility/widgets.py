@@ -4,6 +4,7 @@ from .custom_widgets.MotorInfoBox import Ui_MotorInfoBox
 from .custom_widgets.CameraSwitchButton import Ui_CameraSwitchButton
 from .custom_widgets.MobilityControls import Ui_MobilityControls
 from .custom_widgets.IMUWidget import Ui_IMUWidget
+from .custom_widgets.TimerButton import Ui_TimerButton
 import math
 
 #Initalizes QT widgets
@@ -30,6 +31,14 @@ class CameraSwitchButton(QWidget):
 
         #Sets the UI to use the one made by designer
         self.ui = Ui_CameraSwitchButton()
+        self.ui.setupUi(self)
+
+class TimerButtonPanel(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        #Sets the UI to use the one made by designer
+        self.ui = Ui_TimerWidget()
         self.ui.setupUi(self)
 
 class MobilityControls(QWidget):
