@@ -29,14 +29,13 @@ class BaseDashboardNode(Node):
     __Args__:
         Node (_type_): _description_
     """
-    def __init__(self,node_name: str):
+    def __init__(self, node_name: str):
         super().__init__(node_name)
-        self.__callbacks = {}
+        self._callbacks = {}  # key -> list[callback]
 
-    def register_callback(self,name:str, callback):
-        self.__callbacks[name] = callback
-        
-    def __dispatch(self,name:str,msg):
-        callback = self.__callbacks.get(name)
-        if callback:
-            callback(msg)
+    def register_callback(self, name: str, callback):
+        self._callbacks.setdefault(name, []).append(callback)
+
+    def _dispatch(self, key: str, msg):
+        for cb in self._callbacks.get(key, []):
+            cb(msg)
