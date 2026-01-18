@@ -105,31 +105,23 @@ class VideoWidget(QWidget):
         self.video_label.setStyleSheet("border: 2px solid #333; background-color: #f0f0f0;")
         self.layout.addWidget(self.video_label)
 
-        # Initialize the worker thread
-        self.thread = QThread(self)
-        self.camera_worker = CameraWorker(None, camera_id)
-        self.camera_worker.moveToThread(self.thread)
-        self.thread.started.connect(self.camera_worker.run)
+        # Initialize the worker thread (CameraWorker already IS a QThread)
+        self.camera_worker = CameraWorker(self, camera_id)
 
         # Connect signals from the worker thread
         self.camera_worker.frame_ready.connect(self.update_image)
         self.camera_worker.error_occurred.connect(self.handle_camera_error)
 
-        self.camera_worker.finished.connect(self.thread.quit)
-        self.camera_worker.finished.connect(self.camera_worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
-
 
     # Start the worker thread
     def start_camera(self):
-        if not self.thread.isRunning():
-            self.thread.start()
-    
+        if not self.camera_worker.isRunning():
+            self.camera_worker._is_running = True
+            self.camera_worker.start()
+
     def stop_camera(self):
-        if self.thread.isRunning():
+        if self.camera_worker.isRunning():
             self.camera_worker.stop()
-            self.thread.quit()
-            self.thread.wait()
 
     @Slot(np.ndarray)
     def update_image(self, cv_img):

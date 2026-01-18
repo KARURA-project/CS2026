@@ -251,8 +251,6 @@ class Ui_MainWindow(object):
         # IMPORTANT: remove tight max size so it can grow
         self.maincameravideo.setMaximumSize(QSize(16777215, 16777215))
 
-        self.verticalLayout_4.addWidget(self.maincameravideo)
-
         # Main Camera Panel (below camera)
         # Add camera FIRST and make it the thing that grows
         self.verticalLayout_4.addWidget(self.maincameravideo, 1)  # stretch=1
@@ -276,6 +274,7 @@ class Ui_MainWindow(object):
         # Make sure the layout stretches the camera area, not the panel
         self.verticalLayout_4.setStretch(0, 1)  # camera grows
         self.verticalLayout_4.setStretch(1, 0)  # panel stays small
+        self.verticalLayout_4.setStretch(2, 0)
 
 
         # Add central panel to splitter

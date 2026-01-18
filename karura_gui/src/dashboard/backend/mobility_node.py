@@ -9,7 +9,7 @@ using the BaseDashboardNode._dispatch() pattern.
 import sys
 import rclpy
 from rclpy.node import Node
-from base_node import BaseDashboardNode
+from dashboard.backend.base_node import BaseDashboardNode
 from std_msgs.msg import String, Float64MultiArray, Float64, Int32
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry

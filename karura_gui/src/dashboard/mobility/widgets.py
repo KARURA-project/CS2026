@@ -5,6 +5,7 @@ from .custom_widgets.CameraSwitchButton import Ui_CameraSwitchButton
 from .custom_widgets.MobilityControls import Ui_MobilityControls
 from .custom_widgets.IMUWidget import Ui_IMUWidget
 from .custom_widgets.TimerButton import Ui_TimerButton
+from .custom_widgets.TimerButtonPanel import Ui_TimerButtonPanel
 import math
 
 #Initalizes QT widgets
@@ -38,7 +39,7 @@ class TimerButtonPanel(QWidget):
         super().__init__(parent)
 
         #Sets the UI to use the one made by designer
-        self.ui = Ui_TimerWidget()
+        self.ui = Ui_TimerButtonPanel()
         self.ui.setupUi(self)
 
 class MobilityControls(QWidget):
