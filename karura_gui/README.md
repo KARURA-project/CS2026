@@ -83,4 +83,14 @@ To run main_mobility.py:
 1. CD to ./CS2026
 2. Run the source .venv/bin/activate
 3. CD to ./karura_gui/src
-4. Run python3 -m dashboard.main_mobility
+4. Run source /opt/ros/jazzy/setup.bash
+5. Run python3 -m dashboard.main_mobility
+
+
+## 4. Libraries to install
+- ROS2
+- Pyside6
+- OpenCV
+
+If you have issues still install
+- pyyaml (pip install pyyaml) 
