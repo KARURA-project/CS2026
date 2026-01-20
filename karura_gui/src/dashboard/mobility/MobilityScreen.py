@@ -171,6 +171,8 @@ from .custom_widgets.Terminal import PrimitiveTerminalWidget, DEFAULT_TTY_CMD
 #     def retranslateUi(self, MainWindow):
 #         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
 #         self.groupBox.setTitle("")
+from dashboard.core import config
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -241,7 +243,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
 
         # Single BIG camera view (resizable)
-        self.maincameravideo = VideoWidget(None, 0)
+        self.maincameravideo = VideoWidget(source=config.RTSP_URL)
         self.maincameravideo.setObjectName(u"maincameravideo")
 
         # Make it expand to available space

@@ -26,63 +26,59 @@ from PySide6.QtWidgets import (
 
 class CameraWorker(QThread):
     """
-    A QThread subclass to handle the OpenCV video capture in a separate thread.
-    This prevents the main UI thread from freezing.
+    Main worker thread for CameraWorker for video capture. Takes in backend source (rtsp server) 
+    in order to display video footage. Depending on your internet source, i.e rellis wifi or KaruraLink, you may 
+    need to modify the core/config.py file's ip address for the rtsp server. Unless you are zac renkema though, do
+    push changes to the modified ip address to the github. I will smite you. 
     """
-    frame_ready = Signal(np.ndarray) # Signal to emit the captured frame (numpy array)
-    error_occurred = Signal(str)     # Signal for errors, like camera not opening
+    frame_ready = Signal(np.ndarray)
+    error_occurred = Signal(str)
 
-    def __init__(self, parent=None, camera_id = 0):
+    def __init__(self, parent=None, source=0):
         super().__init__(parent)
         self._is_running = True
         self.cap = None
-        self.camera_id = camera_id
+        self.source = source  
 
     def run(self):
-        """
-        The main loop of the thread, where video capture happens.
-        """
-        # 0 usually refers to the first camera. Using CAP_V4L2 for Linux compatibility
-        # as suggested by the original code, but it's often optional.
-        self.cap = cv2.VideoCapture(self.camera_id, cv2.CAP_V4L2)
+        # Decide backend based on source type
+        if isinstance(self.source, str) and self.source.startswith("rtsp://"):
+            # RTSP stream
+            self.cap = cv2.VideoCapture(self.source, cv2.CAP_FFMPEG)
+            # Best-effort low latency (may not be honored on all builds)
+            self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            print(f"[CameraWorker] Starting with source={self.source!r}") #DEBUG STATEMENT REMOVE LATER
+
+        else:
+            # Local camera
+            self.cap = cv2.VideoCapture(int(self.source), cv2.CAP_V4L2)
+            # Local camera props only
+            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1040)
+            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 980)
+            self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
 
         if not self.cap.isOpened():
-            self.error_occurred.emit("Error: Could not open camera. Check camera index or permissions.")
+            self.error_occurred.emit(f"Error: Could not open video source: {self.source}")
             self._is_running = False
             return
 
-        # Set properties (as per original request)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1040)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 980)
-        # Setting MJPG is good practice for performance, though not always required
-        self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
-
         while self._is_running:
-            # Capture frame-by-frame
             ret, frame = self.cap.read()
-
-            if ret:
-                # Emit the captured frame (numpy array) to the main thread
+            if ret and frame is not None:
                 self.frame_ready.emit(frame)
             else:
-                # Handle frame read error
-                print("Warning: Could not read frame.")
-                break # Exit loop on read error
+                # RTSP can drop frames briefly; don’t hard-exit immediately
+                self.msleep(30)
+                continue
 
-            # Control frame rate roughly (like the original time.sleep(.100))
-            # QThread provides better ways, but a brief wait is fine for this example.
-            self.msleep(30) # Roughly 33 FPS (1000ms / 30ms ≈ 33 FPS)
+            self.msleep(10)  # lower sleep for smoother RTSP
 
-        # Cleanup when the loop exits
         self.cap.release()
         print("CameraWorker: Video capture released.")
 
     def stop(self):
-        """
-        Gracefully stop the thread loop.
-        """
         self._is_running = False
-        self.wait() # Wait for the thread to finish execution
+        self.wait()
 
 # --- 2. Main Widget for Display ---
 
@@ -90,7 +86,7 @@ class VideoWidget(QWidget):
     """
     The main widget that displays the video feed.
     """
-    def __init__(self, parent=None, camera_id = 0):
+    def __init__(self, parent=None, source=0):
         super().__init__(parent)
         self.setWindowTitle("PySide6 OpenCV Camera Feed")
         # self.setMinimumSize(640, 480)
@@ -106,11 +102,12 @@ class VideoWidget(QWidget):
         self.layout.addWidget(self.video_label)
 
         # Initialize the worker thread (CameraWorker already IS a QThread)
-        self.camera_worker = CameraWorker(self, camera_id)
+        self.camera_worker = CameraWorker(self, source)
 
         # Connect signals from the worker thread
         self.camera_worker.frame_ready.connect(self.update_image)
         self.camera_worker.error_occurred.connect(self.handle_camera_error)
+        # print(f"[CameraWorker] cap.isOpened() = {self.cap.isOpened()}")
 
 
     # Start the worker thread
@@ -183,8 +180,9 @@ def main():
     print(f"OpenCV Version: {cv2.__version__}")
     
     # Create and show the main window
-    main_widget = VideoWidget()
+    main_widget = VideoWidget(source="rtsp://172.17.248.2:8554/cam")
     main_widget.show()
+    main_widget.start_camera()
     
     # Start the event loop
     sys.exit(app.exec())
