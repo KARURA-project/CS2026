@@ -253,11 +253,15 @@ class Ui_MainWindow(object):
         # 3. Create the Vertical Layout for the Panels (Camera Panel + Timer)
         self.panelStackLayout = QVBoxLayout() # No parent in constructor
 
+        self.panelStackLayout.addStretch(1)
+
         self.maincamerapanel = MainCameraPanel(self.centralgroup)
-        self.maincamerapanel.setFixedHeight(180)
+        #self.maincamerapanel.setFixedHeight(180)
+        self.maincamerapanel.setMaximumSize(QSize(300, 100))
         self.panelStackLayout.addWidget(self.maincamerapanel)
 
         self.timerbuttonpanel = TimerButtonPanel(self.centralgroup)
+        self.timerbuttonpanel.setMaximumSize(QSize(300, 120))
         self.panelStackLayout.addWidget(self.timerbuttonpanel)
 
         self.timerprogressbar = TimerBarWidget(6000, self.centralgroup)
