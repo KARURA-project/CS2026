@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
     QMainWindow, QMenuBar, QSizePolicy, QStatusBar,
     QVBoxLayout, QWidget, QSplitter)
 
-from .widgets import MotorInfoPanel, MainCameraPanel, MobilityControls, IMUWidget, TimerButtonPanel
+from .widgets import MotorInfoPanel, MainCameraPanel, MobilityControls, IMUWidget, TimerButtonPanel, WASDWidget
 from .custom_widgets.Camera import VideoWidget
 from .custom_widgets.Terminal import PrimitiveTerminalWidget, DEFAULT_TTY_CMD
 
@@ -270,6 +270,13 @@ class Ui_MainWindow(object):
         self.timerbuttonpanel.setObjectName(u"timerbuttonpanel")
 
         self.verticalLayout_4.addWidget(self.timerbuttonpanel, 0)
+
+
+        self.wasdwidget = WASDWidget(self.centralgroup)
+        self.wasdwidget.setObjectName(u"wasdwidget")
+
+        self.verticalLayout_4.addWidget(self.wasdwidget, 0)
+
 
         # Make sure the layout stretches the camera area, not the panel
         self.verticalLayout_4.setStretch(0, 1)  # camera grows

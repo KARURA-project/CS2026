@@ -1,11 +1,11 @@
 from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QSizePolicy, QVBoxLayout
-import PySide6.QtCore
+from PySide6.QtCore import Signal, Slot, Qt, QCoreApplication
 from .custom_widgets.MotorInfoBox import Ui_MotorInfoBox
 from .custom_widgets.CameraSwitchButton import Ui_CameraSwitchButton
 from .custom_widgets.MobilityControls import Ui_MobilityControls
 from .custom_widgets.IMUWidget import Ui_IMUWidget
-from .custom_widgets.TimerButton import Ui_TimerButton
 from .custom_widgets.TimerButtonPanel import Ui_TimerButtonPanel
+from .custom_widgets.WASDWidget import Ui_WASDWidget
 import math
 
 #Initalizes QT widgets
@@ -41,6 +41,49 @@ class TimerButtonPanel(QWidget):
         #Sets the UI to use the one made by designer
         self.ui = Ui_TimerButtonPanel()
         self.ui.setupUi(self)
+
+class WASDWidget(QWidget):
+    # Signal: sends key string (e.g. "W") and state (True for Green, False for Gray)
+    keyStateChanged = Signal(str, bool)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        # Sets the UI to use the one made by designer
+        self.ui = Ui_WASDWidget()
+        self.ui.setupUi(self)
+
+        # Dictionary to map strings to the UI objects
+        self.key_map = {
+            "W": self.ui.labelW,
+            "A": self.ui.labelA,
+            "S": self.ui.labelS,
+            "D": self.ui.labelD
+        }
+
+        # Connect signal to the slot that changes color
+        self.keyStateChanged.connect(self.set_key_active)
+
+    @Slot(str, bool)
+    def set_key_active(self, key, active):
+        key = key.upper()
+        if key in self.key_map:
+            label = self.key_map[key]
+            if active:
+                # Flip to Green
+                label.setStyleSheet(self.ui.base_style + "QLabel { background-color: #4CAF50; color: white; border-color: #388E3C; }")
+            else:
+                # Flip back to Gray
+                label.setStyleSheet(self.ui.base_style)
+
+    # Example: Override keyboard events to test the signal
+    def keyPressEvent(self, event):
+        char = event.text().upper()
+        self.keyStateChanged.emit(char, True)
+
+    def keyReleaseEvent(self, event):
+        char = event.text().upper()
+        self.keyStateChanged.emit(char, False)
 
 class MobilityControls(QWidget):
     def __init__(self, parent=None):
@@ -108,7 +151,7 @@ class MotorInfoPanel(QWidget):
         mot = MotorInfoBox()
 
         #Makes background color show
-        mot.setAttribute(PySide6.QtCore.Qt.WA_StyledBackground, True)
+        mot.setAttribute(Qt.WA_StyledBackground, True)
 
         # FORCE every widget to expand but NEVER overlap
         mot.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -140,6 +183,6 @@ class MotorInfoPanel(QWidget):
         #Updates each value. 
         for i in range(0, len(arr)):
             print(arr[i])
-            self.motors[i].ui.speed_value.setText(PySide6.QtCore.QCoreApplication.translate("MotorInfoBox", u"{value}".format(value = arr[i]["speed"]), None))
+            self.motors[i].ui.speed_value.setText(QCoreApplication.translate("MotorInfoBox", u"{value}".format(value = arr[i]["speed"]), None))
             self.motors[i].ui.battery_bar.setValue(arr[i]["battery"])
         
