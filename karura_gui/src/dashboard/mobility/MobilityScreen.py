@@ -19,9 +19,10 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
     QMainWindow, QMenuBar, QSizePolicy, QStatusBar,
     QVBoxLayout, QWidget, QSplitter)
 
-from .widgets import MotorInfoPanel, MainCameraPanel, MobilityControls, IMUWidget, TimerButtonPanel, WASDWidget
+from .widgets import MotorInfoPanel, MainCameraPanel, MobilityControls, IMUWidget, TimerButtonPanel, WASDWidget, TimerBarWidget
 from .custom_widgets.Camera import VideoWidget
 from .custom_widgets.Terminal import PrimitiveTerminalWidget, DEFAULT_TTY_CMD
+
 
 # class Ui_MainWindow(object):
 #     def setupUi(self, MainWindow):
@@ -234,71 +235,49 @@ class Ui_MainWindow(object):
         # Central Panel (Camera + Controls)
         # =========================
         self.centralgroup = QFrame(self.centralwidget)
-        self.centralgroup.setObjectName(u"centralgroup")
         self.centralgroup.setMinimumSize(QSize(400, 550))
         self.centralgroup.setFrameShape(QFrame.Shape.StyledPanel)
-        self.centralgroup.setFrameShadow(QFrame.Shadow.Raised)
 
-        self.verticalLayout_4 = QVBoxLayout(self.centralgroup)
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        # Main Vertical Layout for the whole frame
+        self.verticalLayout_Main = QVBoxLayout(self.centralgroup)
 
-        # Single BIG camera view (resizable)
+        # 1. Add the BIG camera view to the top
         self.maincameravideo = VideoWidget(source=config.RTSP_URL)
-        self.maincameravideo.setObjectName(u"maincameravideo")
-
-        # Make it expand to available space
         camPolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.maincameravideo.setSizePolicy(camPolicy)
+        self.verticalLayout_Main.addWidget(self.maincameravideo, 1) # Stretch = 1
 
-        # IMPORTANT: remove tight max size so it can grow
-        self.maincameravideo.setMaximumSize(QSize(16777215, 16777215))
+        # 2. Create the Horizontal Layout for the bottom section
+        self.bottomHorizontalLayout = QHBoxLayout() # No parent in constructor
 
-        # Main Camera Panel (below camera)
-        # Add camera FIRST and make it the thing that grows
-        self.verticalLayout_4.addWidget(self.maincameravideo, 1)  # stretch=1
+        # 3. Create the Vertical Layout for the Panels (Camera Panel + Timer)
+        self.panelStackLayout = QVBoxLayout() # No parent in constructor
 
-        # Main Camera Panel (below camera) -> keep it compact
         self.maincamerapanel = MainCameraPanel(self.centralgroup)
-        self.maincamerapanel.setObjectName(u"maincamerapanel")
-
-        panelPolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        self.maincamerapanel.setSizePolicy(panelPolicy)
-        self.maincamerapanel.setMinimumHeight(160)   # tune this
-        self.maincamerapanel.setMaximumHeight(220)   # tune this
-
-        self.verticalLayout_4.addWidget(self.maincamerapanel, 0)  # stretch=0
+        self.maincamerapanel.setFixedHeight(180)
+        self.panelStackLayout.addWidget(self.maincamerapanel)
 
         self.timerbuttonpanel = TimerButtonPanel(self.centralgroup)
-        self.timerbuttonpanel.setObjectName(u"timerbuttonpanel")
+        self.panelStackLayout.addWidget(self.timerbuttonpanel)
 
-        self.verticalLayout_4.addWidget(self.timerbuttonpanel, 0)
-
-
-        self.wasdwidget = WASDWidget(self.centralgroup)
-        self.wasdwidget.setObjectName(u"wasdwidget")
-
-        self.verticalLayout_4.addWidget(self.wasdwidget, 0)
-
-
-        # Add spacer (TODO)
-
-        # Add Timer Progress Bar
         self.timerprogressbar = TimerBarWidget(6000, self.centralgroup)
-        self.timerprogressbar.setObjectName(u"timerprogressbar")
 
-        self.verticalLayout_4.addWidget(self.timerprogressbar, 0)
+        # 4. Create the WASD Widget
+        self.wasdwidget = WASDWidget(self.centralgroup)
 
+        # 5. Add and set up horizontal layout
+        self.bottomHorizontalLayout.addLayout(self.panelStackLayout, 1)
+        self.bottomHorizontalLayout.addStretch(1)
+        self.bottomHorizontalLayout.addWidget(self.wasdwidget, 0)
 
-        # Make sure the layout stretches the camera area, not the panel
-        self.verticalLayout_4.setStretch(0, 1)  # camera grows
-        self.verticalLayout_4.setStretch(1, 0)  # panel stays small
-        self.verticalLayout_4.setStretch(2, 0)
+        # Second, add that entire Horizontal row to the Main Vertical layout
+        self.verticalLayout_Main.addLayout(self.bottomHorizontalLayout, 0)
 
+        # Add timerprogressbar to the bottom
+        self.verticalLayout_Main.addWidget(self.timerprogressbar)
 
         # Add central panel to splitter
         self.splitter.addWidget(self.centralgroup)
-
-        # OPTIONAL: set initial widths (left, center)
         self.splitter.setSizes([320, 704])
 
         # --- Right panel removed بالكامل (do not create rightgroup) ---

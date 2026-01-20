@@ -1,5 +1,21 @@
-from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QSizePolicy, QVBoxLayout
-from PySide6.QtCore import Signal, Slot, Qt, QCoreApplication
+from PySide6.QtWidgets import (
+    QApplication, 
+    QWidget, 
+    QVBoxLayout, 
+    QHBoxLayout, 
+    QGridLayout, 
+    QProgressBar, 
+    QPushButton, 
+    QLabel, 
+    QSizePolicy
+)
+from PySide6.QtCore import (
+    QTimer, 
+    Signal, 
+    Slot, 
+    Qt, 
+    QCoreApplication
+)
 from .custom_widgets.MotorInfoBox import Ui_MotorInfoBox
 from .custom_widgets.CameraSwitchButton import Ui_CameraSwitchButton
 from .custom_widgets.MobilityControls import Ui_MobilityControls
@@ -7,7 +23,6 @@ from .custom_widgets.IMUWidget import Ui_IMUWidget
 from .custom_widgets.TimerButtonPanel import Ui_TimerButtonPanel
 from .custom_widgets.WASDWidget import Ui_WASDWidget
 import math
-
 #Initalizes QT widgets
 class MotorInfoBox(QWidget):
     def __init__(self, parent=None):
@@ -84,6 +99,59 @@ class WASDWidget(QWidget):
     def keyReleaseEvent(self, event):
         char = event.text().upper()
         self.keyStateChanged.emit(char, False)
+
+
+class TimerBarWidget(QWidget):
+    def __init__(self, total_seconds=10, parent=None):
+        super().__init__(parent)
+        
+        # Configuration
+        self.total_seconds = total_seconds
+        self.remaining_ms = total_seconds * 1000
+        self.timer_interval = 100  # Update every 100ms for smoothness
+        
+        # Setup UI
+        self.layout = QVBoxLayout(self)
+        self.layout.setContentsMargins(0, 0, 0, 0) # Ensures full width
+        
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setRange(0, self.total_seconds * 1000)
+        self.progress_bar.setValue(0)
+        self.progress_bar.setTextVisible(True)
+        self.progress_bar.setFormat(f"%v / {self.total_seconds}s")
+        
+        self.layout.addWidget(self.progress_bar)
+        
+        # Internal Timer
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self._update_progress)
+        
+    def _update_progress(self):
+        if self.remaining_ms > 0:
+            self.remaining_ms -= self.timer_interval
+            # Display current progress (counting up)
+            elapsed = (self.total_seconds * 1000) - self.remaining_ms
+            self.progress_bar.setValue(elapsed)
+            self.progress_bar.setFormat(f"{elapsed/1000:.1f}s / {self.total_seconds}s")
+        else:
+            self.stop()
+
+    @Slot()
+    def start(self):
+        if self.remaining_ms > 0:
+            self.timer.start(self.timer_interval)
+
+    @Slot()
+    def pause(self):
+        self.timer.stop()
+
+    @Slot()
+    def stop(self):
+        self.timer.stop()
+        self.remaining_ms = self.total_seconds * 1000
+        self.progress_bar.setValue(0)
+        self.progress_bar.setFormat(f"0s / {self.total_seconds}s")
+
 
 class MobilityControls(QWidget):
     def __init__(self, parent=None):
