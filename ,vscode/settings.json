@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./karura_gui/src/dashboard/mobility/custom_widgets"
+    ]
+}
+

@@ -280,6 +280,15 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.addWidget(self.wasdwidget, 0)
 
 
+        # Add spacer (TODO)
+
+        # Add Timer Progress Bar
+        self.timerprogressbar = TimerBarWidget(6000, self.centralgroup)
+        self.timerprogressbar.setObjectName(u"timerprogressbar")
+
+        self.verticalLayout_4.addWidget(self.timerprogressbar, 0)
+
+
         # Make sure the layout stretches the camera area, not the panel
         self.verticalLayout_4.setStretch(0, 1)  # camera grows
         self.verticalLayout_4.setStretch(1, 0)  # panel stays small
