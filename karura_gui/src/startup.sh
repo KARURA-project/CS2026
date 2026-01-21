@@ -1,3 +1,18 @@
+## CLEANUP
+#Clean up function
+cleanup ()  {
+    echo -e "\nShutting down... Deactivating virtual environment."
+    # Check if the deactivate function exists (provided by venv)
+    if [ -n "$VIRTUAL_ENV" ]; then
+        deactivate
+    fi
+}
+
+#If the script exists for ANY reason, run the cleanup function
+trap cleanup EXIT
+
+##RUNNING SCRIPT
+
 #1. Move to project root
 cd ../../ || { echo "Directory ./CS2026 not found"; exit 1; }
 
