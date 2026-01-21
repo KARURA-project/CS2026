@@ -267,7 +267,7 @@ class Ui_MainWindow(object):
         self.timerbuttonpanel.setMaximumSize(QSize(300, 120))
         self.panelStackLayout.addWidget(self.timerbuttonpanel)
 
-        self.timerprogressbar = TimerBarWidget(6000, self.centralgroup)
+        self.timerprogressbar = TimerBarWidget(300, self.centralgroup)
 
         # 4. Create the WASD Widget
         self.wasdwidget = WASDWidget(self.centralgroup)
