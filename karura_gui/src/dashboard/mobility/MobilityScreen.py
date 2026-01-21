@@ -202,9 +202,12 @@ class Ui_MainWindow(object):
         self.leftgroup.setMaximumSize(QSize(600, 16777215))  # optional cap
         self.leftgroup.setFrameShape(QFrame.Shape.StyledPanel)
         self.leftgroup.setFrameShadow(QFrame.Shadow.Raised)
- 
+
         self.verticalLayout = QVBoxLayout(self.leftgroup)
         self.verticalLayout.setObjectName(u"verticalLayout")
+
+        # Align the layout's content to the horizontal center
+        self.verticalLayout.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         # self.verticalLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.verticalLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
