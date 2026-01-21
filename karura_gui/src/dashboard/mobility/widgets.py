@@ -102,7 +102,7 @@ class WASDWidget(QWidget):
 
 
 class TimerBarWidget(QWidget):
-    def __init__(self, total_seconds=10, parent=None):
+    def __init__(self, total_seconds=300, parent=None):
         super().__init__(parent)
         
         # Configuration
@@ -115,7 +115,7 @@ class TimerBarWidget(QWidget):
         self.layout.setContentsMargins(0, 0, 0, 0) # Ensures full width
         
         self.progress_bar = QProgressBar()
-        self.progress_bar.setRange(0, self.total_seconds * 1000)
+        self.progress_bar.setRange(0, self.total_seconds)
         self.progress_bar.setValue(0)
         self.progress_bar.setTextVisible(True)
         self.progress_bar.setFormat(f"%v / {self.total_seconds}s")

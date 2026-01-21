@@ -29,23 +29,26 @@ class Ui_TimerButtonPanel(object):
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer)
 
-        self.pushButton_2 = QPushButton(TimerButtonPanel)
-        self.pushButton_2.setObjectName(u"pushButton_2")
-        self.pushButton_2.setMinimumSize(QSize(80, 80))
-        self.pushButton_2.setMaximumSize(QSize(80, 80))
+        self.startButton = QPushButton(TimerButtonPanel)
+        self.startButton.setObjectName(u"startButton")
+        self.startButton.setMinimumSize(QSize(80, 80))
+        self.startButton.setMaximumSize(QSize(80, 80))
 
-        self.horizontalLayout_2.addWidget(self.pushButton_2)
+        #Implements starting timer
+        self.startButton.clicked.connect
+
+        self.horizontalLayout_2.addWidget(self.startButton)
 
         self.horizontalSpacer_3 = QSpacerItem(20, 20, QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_3)
 
-        self.pushButton = QPushButton(TimerButtonPanel)
-        self.pushButton.setObjectName(u"pushButton")
-        self.pushButton.setMinimumSize(QSize(80, 80))
-        self.pushButton.setMaximumSize(QSize(80, 80))
+        self.stopButton = QPushButton(TimerButtonPanel)
+        self.stopButton.setObjectName(u"stopButton")
+        self.stopButton.setMinimumSize(QSize(80, 80))
+        self.stopButton.setMaximumSize(QSize(80, 80))
 
-        self.horizontalLayout_2.addWidget(self.pushButton)
+        self.horizontalLayout_2.addWidget(self.stopButton)
 
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -59,7 +62,8 @@ class Ui_TimerButtonPanel(object):
 
     def retranslateUi(self, TimerButtonPanel):
         TimerButtonPanel.setWindowTitle(QCoreApplication.translate("TimerButtonPanel", u"TimerButtonPanel", None))
-        self.pushButton_2.setText(QCoreApplication.translate("TimerButtonPanel", u"Start", None))
-        self.pushButton.setText(QCoreApplication.translate("TimerButtonPanel", u"Stop", None))
+        self.startButton.setText(QCoreApplication.translate("TimerButtonPanel", u"Start", None))
+        self.stopButton.setText(QCoreApplication.translate("TimerButtonPanel", u"Stop", None))
     # retranslateUi
+
 

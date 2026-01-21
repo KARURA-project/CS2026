@@ -8,11 +8,10 @@ cleanup ()  {
     fi
 }
 
-#If the script exists for ANY reason, run the cleanup function
+#If the script exits for ANY reason, run the cleanup function
 trap cleanup EXIT
 
 ##RUNNING SCRIPT
-
 #1. Move to project root
 cd ../../ || { echo "Directory ./CS2026 not found"; exit 1; }
 
