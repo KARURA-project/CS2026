@@ -26,6 +26,7 @@ def main():
         print("[Main] Mobility bridge started")
 
         window = MobilityMainWindow()
+        window.bridge = bridge
         window.connect_signals(bridge)
         window.show()
         
