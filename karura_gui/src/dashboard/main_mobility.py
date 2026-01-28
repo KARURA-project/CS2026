@@ -79,11 +79,11 @@ def main():
         QTimer.singleShot(0, start_camera_if_present)
 
         #Handles starting and stopping timer
-        def connect_timer_logic():
-            window.ui.timerbuttonpanel.ui.startButton.clicked.connect(window.ui.timerprogressbar.start)    
-            window.ui.timerbuttonpanel.ui.stopButton.clicked.connect(window.ui.timerprogressbar.stop)
+        # def connect_timer_logic():
+        #     window.ui.timerbuttonpanel.ui.startButton.clicked.connect(window.ui.timerprogressbar.start)    
+        #     window.ui.timerbuttonpanel.ui.stopButton.clicked.connect(window.ui.timerprogressbar.stop)
 
-        connect_timer_logic()
+        # connect_timer_logic()
 
         def on_exit():
             print("[Main] Shutting down mobility bridge")
