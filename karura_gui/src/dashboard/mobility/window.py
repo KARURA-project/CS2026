@@ -14,7 +14,7 @@ class MobilityMainWindow(QMainWindow):
         if hasattr(self.ui, "maincameravideo"):
             self.maincameravideo = self.ui.maincameravideo
 
-        self.setStyleSheet("background-color: gray;")
+        # self.setStyleSheet("background-color: gray;")
 
     def connect_signals(self, bridge):
         self.bridge = bridge

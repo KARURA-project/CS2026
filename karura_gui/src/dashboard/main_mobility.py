@@ -4,10 +4,14 @@ import traceback
 from PySide6.QtCore import QTimer
 from karura_gui.mobility import MobilityMainWindow, MobilityBridge
 # raise RuntimeError("SENTINEL: dashboard.main-mobility is running")
-
+from pathlib import Path
 
 def main():
     app = QApplication(sys.argv)
+    qss_path = Path(__file__).resolve().parent / "core" / "karura_dark.qss"
+    app.setStyleSheet(qss_path.read_text(encoding="utf-8"))
+    print(f"[STYLE] Loaded QSS: {qss_path}", file=sys.stderr, flush=True)
+    
     bridge = None
     window = None
     print("[MAIN] hello", file=sys.stderr, flush=True)

@@ -14,7 +14,7 @@ from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
 from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
+    QPalette, QPixmap, QRadialGradient, QTransform, QMouseEvent)
 from PySide6.QtWidgets import (QApplication, QGridLayout, QPushButton, QSizePolicy,
     QWidget)
 
@@ -45,4 +45,10 @@ class Ui_CameraSwitchButton(object):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.pushButton.setText(QCoreApplication.translate("Form", u"Switch Cameras", None))
     # retranslateUi
+
+    # Set clicable action
+    def onClickLabel(self, event: QMouseEvent):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit()
+            super().mousePressEvent(event)
 

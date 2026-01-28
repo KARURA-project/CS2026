@@ -49,6 +49,8 @@ class CameraSwitchButton(QWidget):
         self.ui = Ui_CameraSwitchButton()
         self.ui.setupUi(self)
 
+    
+
 class TimerButtonPanel(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -58,47 +60,91 @@ class TimerButtonPanel(QWidget):
         self.ui.setupUi(self)
 
 class WASDWidget(QWidget):
-    # Signal: sends key string (e.g. "W") and state (True for Green, False for Gray)
-    keyStateChanged = Signal(str, bool)
+    """
+    Teleop key visualizer for teleop_twist_keyboard:
+      u i o
+      j k l
+      m , .
 
+    Highlights pressed keys. Handles uppercase (Shift) by treating it as the same key.
+    """
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        # Sets the UI to use the one made by designer
         self.ui = Ui_WASDWidget()
         self.ui.setupUi(self)
 
-        # Dictionary to map strings to the UI objects
+        # Make this widget receive keyboard events
+        self.setFocusPolicy(Qt.StrongFocus)
+
+        # Two styles: idle vs active
+        self.idle_style = self.ui.base_style
+        self.active_style = """
+            QLabel {
+                background-color: #3A1C22;   /* deep red highlight */
+                color: #F2F2F2;
+                border: 1px solid #E05E5E;
+                border-radius: 10px;
+                font-weight: 900;
+                font-size: 16px;
+                padding: 6px;
+            }
+        """
+
+        # Map keys to labels
         self.key_map = {
-            "W": self.ui.labelW,
-            "A": self.ui.labelA,
-            "S": self.ui.labelS,
-            "D": self.ui.labelD
+            "u": self.ui.keyU,
+            "i": self.ui.keyI,
+            "o": self.ui.keyO,
+            "j": self.ui.keyJ,
+            "k": self.ui.keyK,
+            "l": self.ui.keyL,
+            "m": self.ui.keyM,
+            ",": self.ui.keyComma,
+            ".": self.ui.keyDot,
         }
 
-        # Connect signal to the slot that changes color
-        self.keyStateChanged.connect(self.set_key_active)
+        # Track which keys are currently down (to handle repeats cleanly)
+        self._pressed = set()
 
-    @Slot(str, bool)
-    def set_key_active(self, key, active):
-        key = key.upper()
-        if key in self.key_map:
-            label = self.key_map[key]
-            if active:
-                # Flip to Green
-                label.setStyleSheet(self.ui.base_style + "QLabel { background-color: #4CAF50; color: white; border-color: #388E3C; }")
-            else:
-                # Flip back to Gray
-                label.setStyleSheet(self.ui.base_style)
+    def set_key_active(self, ch: str, active: bool):
+        ch = ch.lower()
+        if ch not in self.key_map:
+            return
+        lbl = self.key_map[ch]
+        lbl.setStyleSheet(self.active_style if active else self.idle_style)
 
-    # Example: Override keyboard events to test the signal
     def keyPressEvent(self, event):
-        char = event.text().upper()
-        self.keyStateChanged.emit(char, True)
+        text = event.text()
+        if not text:
+            return super().keyPressEvent(event)
+
+        ch = text.lower()
+
+        # Ignore auto-repeat spam (optional)
+        if event.isAutoRepeat():
+            return
+
+        if ch in self.key_map:
+            self._pressed.add(ch)
+            self.set_key_active(ch, True)
+
+        return super().keyPressEvent(event)
 
     def keyReleaseEvent(self, event):
-        char = event.text().upper()
-        self.keyStateChanged.emit(char, False)
+        text = event.text()
+        if not text:
+            return super().keyReleaseEvent(event)
+
+        ch = text.lower()
+
+        if event.isAutoRepeat():
+            return
+
+        if ch in self._pressed:
+            self._pressed.remove(ch)
+            self.set_key_active(ch, False)
+
+        return super().keyReleaseEvent(event)
 
 
 class TimerBarWidget(QWidget):

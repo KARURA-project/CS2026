@@ -1,74 +1,72 @@
 # -*- coding: utf-8 -*-
-
-################################################################################
-## Form generated from reading UI file 'WASDWidget.ui'
-################################################################################
-
 from PySide6.QtCore import (QCoreApplication, QMetaObject, QSize, Qt)
 from PySide6.QtWidgets import (QGridLayout, QLabel, QWidget)
 
 class Ui_WASDWidget(object):
-    def setupUi(self, WASDWidget):
-        if not WASDWidget.objectName():
-            WASDWidget.setObjectName(u"WASDWidget")
-        
-        # Enforcing the size constraints
-        WASDWidget.resize(220, 150)
-        WASDWidget.setMaximumWidth(250)
-        
-        self.gridLayout = QGridLayout(WASDWidget)
-        self.gridLayout.setObjectName(u"gridLayout")
-        self.gridLayout.setSpacing(10)
+    def setupUi(self, TeleopKeyWidget):
+        if not TeleopKeyWidget.objectName():
+            TeleopKeyWidget.setObjectName(u"TeleopKeyWidget")
 
-        # Common style for the keys
+        TeleopKeyWidget.resize(240, 220)
+        TeleopKeyWidget.setMaximumWidth(280)
+
+        self.gridLayout = QGridLayout(TeleopKeyWidget)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.gridLayout.setSpacing(8)
+
+        # Base style (neutral key)
         self.base_style = """
             QLabel {
-                background-color: #E0E0E0;
-                color: #333333;
-                border: 2px solid #BDBDBD;
-                border-radius: 8px;
-                font-weight: bold;
-                font-size: 18px;
+                background-color: #1E1617;
+                color: #F2F2F2;
+                border: 1px solid #3A2426;
+                border-radius: 10px;
+                font-weight: 800;
+                font-size: 16px;
+                padding: 6px;
             }
         """
 
-        # Creating the 4 labels
-        self.labelW = QLabel(WASDWidget)
-        self.labelW.setObjectName(u"labelW")
-        self.labelW.setFixedSize(QSize(60, 60))
-        self.labelW.setAlignment(Qt.AlignCenter)
-        self.labelW.setStyleSheet(self.base_style)
-        self.gridLayout.addWidget(self.labelW, 0, 1, 1, 1)
+        def mk_key(name: str):
+            lbl = QLabel(TeleopKeyWidget)
+            lbl.setObjectName(name)              # important for targeting
+            lbl.setFixedSize(QSize(60, 60))
+            lbl.setAlignment(Qt.AlignCenter)
+            lbl.setStyleSheet(self.base_style)
+            return lbl
 
-        self.labelA = QLabel(WASDWidget)
-        self.labelA.setObjectName(u"labelA")
-        self.labelA.setFixedSize(QSize(60, 60))
-        self.labelA.setAlignment(Qt.AlignCenter)
-        self.labelA.setStyleSheet(self.base_style)
-        self.gridLayout.addWidget(self.labelA, 1, 0, 1, 1)
+        # 3x3 teleop grid: u i o / j k l / m , .
+        self.keyU = mk_key("keyU")
+        self.keyI = mk_key("keyI")
+        self.keyO = mk_key("keyO")
+        self.keyJ = mk_key("keyJ")
+        self.keyK = mk_key("keyK")
+        self.keyL = mk_key("keyL")
+        self.keyM = mk_key("keyM")
+        self.keyComma = mk_key("keyComma")
+        self.keyDot = mk_key("keyDot")
 
-        self.labelS = QLabel(WASDWidget)
-        self.labelS.setObjectName(u"labelS")
-        self.labelS.setFixedSize(QSize(60, 60))
-        self.labelS.setAlignment(Qt.AlignCenter)
-        self.labelS.setStyleSheet(self.base_style)
-        self.gridLayout.addWidget(self.labelS, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.keyU,     0, 0, 1, 1)
+        self.gridLayout.addWidget(self.keyI,     0, 1, 1, 1)
+        self.gridLayout.addWidget(self.keyO,     0, 2, 1, 1)
+        self.gridLayout.addWidget(self.keyJ,     1, 0, 1, 1)
+        self.gridLayout.addWidget(self.keyK,     1, 1, 1, 1)
+        self.gridLayout.addWidget(self.keyL,     1, 2, 1, 1)
+        self.gridLayout.addWidget(self.keyM,     2, 0, 1, 1)
+        self.gridLayout.addWidget(self.keyComma, 2, 1, 1, 1)
+        self.gridLayout.addWidget(self.keyDot,   2, 2, 1, 1)
 
-        self.labelD = QLabel(WASDWidget)
-        self.labelD.setObjectName(u"labelD")
-        self.labelD.setFixedSize(QSize(60, 60))
-        self.labelD.setAlignment(Qt.AlignCenter)
-        self.labelD.setStyleSheet(self.base_style)
-        self.gridLayout.addWidget(self.labelD, 1, 2, 1, 1)
+        self.retranslateUi(TeleopKeyWidget)
+        QMetaObject.connectSlotsByName(TeleopKeyWidget)
 
-        self.retranslateUi(WASDWidget)
-        QMetaObject.connectSlotsByName(WASDWidget)
-    # setupUi
-
-    def retranslateUi(self, WASDWidget):
-        WASDWidget.setWindowTitle(QCoreApplication.translate("WASDWidget", u"WASD Indicator", None))
-        self.labelW.setText(QCoreApplication.translate("WASDWidget", u"W", None))
-        self.labelA.setText(QCoreApplication.translate("WASDWidget", u"A", None))
-        self.labelS.setText(QCoreApplication.translate("WASDWidget", u"S", None))
-        self.labelD.setText(QCoreApplication.translate("WASDWidget", u"D", None))
-    # retranslateUi
+    def retranslateUi(self, TeleopKeyWidget):
+        TeleopKeyWidget.setWindowTitle(QCoreApplication.translate("TeleopKeyWidget", u"Teleop Keys", None))
+        self.keyU.setText(QCoreApplication.translate("TeleopKeyWidget", u"U", None))
+        self.keyI.setText(QCoreApplication.translate("TeleopKeyWidget", u"I", None))
+        self.keyO.setText(QCoreApplication.translate("TeleopKeyWidget", u"O", None))
+        self.keyJ.setText(QCoreApplication.translate("TeleopKeyWidget", u"J", None))
+        self.keyK.setText(QCoreApplication.translate("TeleopKeyWidget", u"K", None))
+        self.keyL.setText(QCoreApplication.translate("TeleopKeyWidget", u"L", None))
+        self.keyM.setText(QCoreApplication.translate("TeleopKeyWidget", u"M", None))
+        self.keyComma.setText(QCoreApplication.translate("TeleopKeyWidget", u",", None))
+        self.keyDot.setText(QCoreApplication.translate("TeleopKeyWidget", u".", None))
