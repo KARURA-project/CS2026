@@ -148,7 +148,7 @@ class WASDWidget(QWidget):
 
 
 class TimerBarWidget(QWidget):
-    def __init__(self, total_seconds=10, parent=None):
+    def __init__(self, total_seconds=300, parent=None):
         super().__init__(parent)
         
         # Configuration
@@ -161,8 +161,8 @@ class TimerBarWidget(QWidget):
         self.layout.setContentsMargins(0, 0, 0, 0) # Ensures full width
         
         self.progress_bar = QProgressBar()
-        self.progress_bar.setRange(0, self.total_seconds * 1000)
-        self.progress_bar.setValue(0)
+        self.progress_bar.setRange(0, self.total_seconds)
+        self.progress_bar.setValue(self.total_seconds)
         self.progress_bar.setTextVisible(True)
         self.progress_bar.setFormat(f"%v / {self.total_seconds}s")
         
@@ -176,8 +176,8 @@ class TimerBarWidget(QWidget):
         if self.remaining_ms > 0:
             self.remaining_ms -= self.timer_interval
             # Display current progress (counting up)
-            elapsed = (self.total_seconds * 1000) - self.remaining_ms
-            self.progress_bar.setValue(elapsed)
+            elapsed = self.remaining_ms
+            self.progress_bar.setValue(elapsed / 1000)
             self.progress_bar.setFormat(f"{elapsed/1000:.1f}s / {self.total_seconds}s")
         else:
             self.stop()
@@ -195,8 +195,8 @@ class TimerBarWidget(QWidget):
     def stop(self):
         self.timer.stop()
         self.remaining_ms = self.total_seconds * 1000
-        self.progress_bar.setValue(0)
-        self.progress_bar.setFormat(f"0s / {self.total_seconds}s")
+        self.progress_bar.setValue(self.total_seconds)
+        self.progress_bar.setFormat(f"%v / {self.total_seconds}s")
 
 
 class MobilityControls(QWidget):

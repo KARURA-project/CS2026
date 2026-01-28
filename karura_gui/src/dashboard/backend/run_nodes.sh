@@ -3,7 +3,7 @@ set -e  # Exit immediately if any command fails
 
 # 1. Sourcing the base ROS 2 environment
 echo "🔧 [1/4] Sourcing ROS 2 Humble environment..."
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 
 # 2. Building the workspace
 echo "🔨 [2/4] Building workspace with colcon..."
@@ -20,3 +20,4 @@ echo "🏃 [4/4] Launching the MobilityNode..."
 # Syntax: ros2 run <package_name> <executable_name>
 # The executable_name is the key from the 'console_scripts' in setup.py
 ros2 run karura_dashboard mobility_node # Replace 'karura_dashboard' with your package name
+
