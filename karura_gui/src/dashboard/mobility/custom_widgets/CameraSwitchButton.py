@@ -47,8 +47,9 @@ class Ui_CameraSwitchButton(object):
     # retranslateUi
 
     # Set clicable action
-    def onClickLabel(self, event: QMouseEvent):
+    def onClick(self, event: QMouseEvent):
         if event.button() == Qt.MouseButton.LeftButton:
             self.clicked.emit()
-            super().mousePressEvent(event)
+            super().onClick(event)
+            # Cylce through the different cameras on the rtsp server
 
