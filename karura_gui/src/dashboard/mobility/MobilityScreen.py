@@ -94,7 +94,7 @@ class Ui_MainWindow(object):
         self.maincameravideo = VideoWidget(source=config.RTSP_URL)
         self.maincameravideo.setObjectName(u"maincameravideo")
 
-        # Force expansion (this is the key fix)
+        # Force expansion
         self.maincameravideo.setMinimumSize(QSize(0, 0))
         self.maincameravideo.setMaximumSize(QSize(16777215, 16777215))
         self.maincameravideo.setSizePolicy(
@@ -138,7 +138,7 @@ class Ui_MainWindow(object):
         self.bottomBar = QFrame(self.centralgroup)
         self.bottomBar.setObjectName(u"bottomBar")
         self.bottomBar.setFixedHeight(86)
-        self.bottomBar.setMaximumWidth(640)  # keep it floating + compact
+        self.bottomBar.setMaximumWidth(640)
 
         self.bottomBarLayout = QHBoxLayout(self.bottomBar)
         self.bottomBarLayout.setContentsMargins(18, 10, 18, 10)
@@ -150,7 +150,7 @@ class Ui_MainWindow(object):
         self.btnStart.setText("Start")
         self.btnStart.setFixedSize(QSize(90, 52))
 
-        # Timer pill (time only)
+        # Timer pill
         self.timerPill = QFrame(self.bottomBar)
         self.timerPill.setObjectName(u"missionTimerPill")
         self.timerPill.setFixedSize(QSize(170, 60))
@@ -182,7 +182,6 @@ class Ui_MainWindow(object):
         self.bottomBarLayout.addWidget(self.timerPill)
         self.bottomBarLayout.addWidget(self.btnStop)
 
-        # Spacer
         self.bottomBarLayout.addStretch(1)
 
         # Status cluster (LINK + RTSP)
@@ -192,7 +191,6 @@ class Ui_MainWindow(object):
         self.statusClusterLayout.setContentsMargins(0, 0, 0, 0)
         self.statusClusterLayout.setSpacing(10)
 
-        # LINK chip
         self.cmdStatusBox = QFrame(self.statusCluster)
         self.cmdStatusBox.setObjectName(u"statusBox")
         self.cmdStatusBoxLayout = QHBoxLayout(self.cmdStatusBox)
@@ -210,7 +208,6 @@ class Ui_MainWindow(object):
         self.cmdStatusBoxLayout.addWidget(self.cmdLed)
         self.cmdStatusBoxLayout.addWidget(self.cmdLabel)
 
-        # RTSP chip
         self.rtspStatusBox = QFrame(self.statusCluster)
         self.rtspStatusBox.setObjectName(u"statusBox")
         self.rtspStatusBoxLayout = QHBoxLayout(self.rtspStatusBox)
@@ -242,9 +239,8 @@ class Ui_MainWindow(object):
 
         self.splitter.addWidget(self.centralgroup)
 
-        # Give the camera panel most space by default
-        self.splitter.setStretchFactor(0, 0)  # left fixed-ish
-        self.splitter.setStretchFactor(1, 1)  # center grows
+        self.splitter.setStretchFactor(0, 0)
+        self.splitter.setStretchFactor(1, 1)
         self.splitter.setSizes([420, 1200])
 
         # ============================================================
@@ -255,6 +251,38 @@ class Ui_MainWindow(object):
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
         MainWindow.setMenuBar(self.menubar)
+
+        # ============================================================
+        # ---- CAMERA SWITCH WIRING (THIS IS THE IMPORTANT PART) ----
+        # ============================================================
+        self._camera_sources = [config.RTSP_FRONT, config.RTSP_REAR, config.RTSP_ARM]
+        self._camera_idx = 0
+
+        # Find the actual QPushButton inside MainCameraPanel.
+        # Your CameraSwitchButton.ui uses objectName "pushButton".
+        switch_btn = self.maincamerapanel.findChild(QPushButton, "pushButton")
+
+        # Fallback: first QPushButton in the panel if objectName differs
+        if switch_btn is None:
+            buttons = self.maincamerapanel.findChildren(QPushButton)
+            switch_btn = buttons[0] if buttons else None
+
+        if switch_btn is not None:
+            def _cycle_camera():
+                self._camera_idx = (self._camera_idx + 1) % len(self._camera_sources)
+                new_url = self._camera_sources[self._camera_idx]
+                self.maincameravideo.switch_camera(new_url)
+
+            switch_btn.clicked.connect(_cycle_camera)
+        else:
+            print("[MobilityScreen] WARNING: No camera switch button found inside MainCameraPanel")
+
+        # Start/Stop control (optional but recommended)
+        self.btnStart.clicked.connect(self.maincameravideo.start_camera)
+        self.btnStop.clicked.connect(self.maincameravideo.stop_camera)
+
+        # Auto-start the default stream
+        self.maincameravideo.start_camera()
 
         self.retranslateUi(MainWindow)
         QMetaObject.connectSlotsByName(MainWindow)

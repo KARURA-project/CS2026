@@ -1,1 +1,12 @@
-RTSP_URL = "rtsp://172.17.248.2:8554/cam"
+# --- RTSP CONFIG ---
+RTSP_HOST = "192.168.150.10"   # rover IP or hostname
+RTSP_PORT = 8554
+
+RTSP_FRONT = f"rtsp://{RTSP_HOST}:{RTSP_PORT}/cam/front"
+RTSP_REAR  = f"rtsp://{RTSP_HOST}:{RTSP_PORT}/cam/rear"
+RTSP_ARM   = f"rtsp://{RTSP_HOST}:{RTSP_PORT}/cam/arm"
+RTSP_SIDE  = f"rtsp://{RTSP_HOST}:{RTSP_PORT}/cam/side"
+RTPS_OVERHEAD = f"rtsp://{RTSP_HOST}:{RTSP_PORT}/cam/overhead"
+
+# Default stream
+RTSP_URL = RTSP_FRONT

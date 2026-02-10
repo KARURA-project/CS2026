@@ -17,7 +17,7 @@ from PySide6.QtCore import (
     QCoreApplication
 )
 from .custom_widgets.MotorInfoBox import Ui_MotorInfoBox
-from .custom_widgets.CameraSwitchButton import Ui_CameraSwitchButton
+# from .custom_widgets.CameraSwitchButton import CameraSwitchButton
 from .custom_widgets.MobilityControls import Ui_MobilityControls
 from .custom_widgets.IMUWidget import Ui_IMUWidget
 from .custom_widgets.TimerButtonPanel import Ui_TimerButtonPanel
@@ -39,17 +39,6 @@ class MotorInfoBox(QWidget):
 #         #Sets the UI to use the one made by designer
 #         self.ui = Ui_NetworkStatus()
 #         self.ui.setupUi(self)
-
-
-class CameraSwitchButton(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        #Sets the UI to use the one made by designer
-        self.ui = Ui_CameraSwitchButton()
-        self.ui.setupUi(self)
-
-    
 
 class TimerButtonPanel(QWidget):
     def __init__(self, parent=None):
@@ -231,17 +220,18 @@ class MainCameraPanel(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        layout = QVBoxLayout()
-        layout.setSpacing(0)          # optional: no spacing
-        layout.setContentsMargins(0,0,0,0)  # optional: flush edges
+        layout = QVBoxLayout(self)
+        layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
 
-        self.camera_switch_button = CameraSwitchButton()
-        # self.network_status = NetworkStatus()
+        # Plain working button
+        self.camera_switch_button = QPushButton("Switch Cameras", self)
+
+        # IMPORTANT: MobilityScreen.py looks for objectName "pushButton"
+        self.camera_switch_button.setObjectName("pushButton")
 
         layout.addWidget(self.camera_switch_button)
-        # layout.addWidget(self.network_status)
-        
-        self.setLayout(layout)
+
         self.setMaximumWidth(200)
         self.setMaximumHeight(170)
 
