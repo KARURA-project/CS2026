@@ -17,8 +17,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QFont
 
-from karura_gui.backend.arm_node import ArmNode
-from karura_gui.core.base_bridge import BaseROS2Bridge
+from dashboard.backend.arm_node import ArmNode
+from dashboard.core.base_bridge import BaseROS2Bridge
 
 
 class TelemetryWidget(QGroupBox):
