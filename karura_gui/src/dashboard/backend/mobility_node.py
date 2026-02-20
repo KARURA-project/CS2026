@@ -50,12 +50,19 @@ class MobilityNode(BaseDashboardNode):
 
     # callbacks
     def mobility_status_callback(self, msg: String):
-        self.get_logger().info(f"mobility_status: {msg.data}")
-        self._dispatch("mobility_status", msg.data)
+        try:
+            self.get_logger().info(f"Received status: {msg.data}")
+            # Try dispatching the object first
+            self._dispatch("mobility_status", msg)
+        except Exception as e:
+            self.get_logger().error(f"Dispatch error: {e}")
 
     def actual_rads_callback(self, msg: Float64MultiArray):
-        self.get_logger().info(f"actual_rads: {msg.data}")
-        self._dispatch("actual_rads", msg.data)
+        try:
+            self.get_logger().info(f"Received rads: {len(msg.data)} values")
+            self._dispatch("actual_rads", msg)
+        except Exception as e:
+            self.get_logger().error(f"Dispatch error: {e}")
 
     def rpy_callback(self, msg: Float64MultiArray):
         self.get_logger().info(f"roll_pitch_yaw: {msg.data}")
