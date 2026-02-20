@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
-################################################################################
-## MobilityScreen.py (generated base + hand-edited layout)
-################################################################################
-
-from PySide6.QtCore import QCoreApplication, QMetaObject, QSize, Qt
+from PySide6.QtCore import QCoreApplication, QMetaObject, QSize, Qt, QTimer
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
     QFrame, QHBoxLayout, QLabel, QMainWindow, QMenuBar,
@@ -12,7 +8,7 @@ from PySide6.QtWidgets import (
 )
 
 from dashboard.core import config
-from .widgets import MotorInfoPanel, MainCameraPanel, IMUWidget, WASDWidget
+from .widgets import MotorInfoPanel, DirectionWidget, BatteryStatusWidget
 from .custom_widgets.Camera import VideoWidget
 
 
@@ -43,13 +39,12 @@ class Ui_MainWindow(object):
         self.rootLayout.addWidget(self.splitter)
 
         # ============================================================
-        # LEFT PANEL: Telemetry
+        # LEFT PANEL: Telemetry (Motors)
         # ============================================================
         self.leftgroup = QFrame(self.centralwidget)
         self.leftgroup.setObjectName(u"leftgroup")
         self.leftgroup.setFrameShape(QFrame.Shape.StyledPanel)
 
-        # Important: constrain left size sanely
         self.leftgroup.setMinimumWidth(360)
         self.leftgroup.setMaximumWidth(520)
 
@@ -59,20 +54,9 @@ class Ui_MainWindow(object):
         self.leftLayout.setSpacing(12)
         self.leftLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        # IMU
-        self.IMU = IMUWidget(self.leftgroup)
-        self.IMU.setObjectName(u"IMUWidget")
-        self.leftLayout.addWidget(self.IMU)
-
-        # Battery/Motor panel
-        self.BatteryData = MotorInfoPanel(self.leftgroup)
-        self.BatteryData.setObjectName(u"BatteryData")
-
-        # Demo items (remove later when data-driven)
-        for _ in range(6):
-            self.BatteryData.add_battery()
-
-        self.leftLayout.addWidget(self.BatteryData)
+        self.MotorPanel = MotorInfoPanel(self.leftgroup)
+        self.MotorPanel.setObjectName(u"MotorPanel")
+        self.leftLayout.addWidget(self.MotorPanel)
 
         self.splitter.addWidget(self.leftgroup)
 
@@ -89,22 +73,19 @@ class Ui_MainWindow(object):
         self.centerLayout.setSpacing(12)
 
         # ------------------------------------------------------------
-        # 1) MAIN CAMERA VIEW (must expand)
+        # 1) MAIN CAMERA VIEW
         # ------------------------------------------------------------
         self.maincameravideo = VideoWidget(source=config.RTSP_URL)
         self.maincameravideo.setObjectName(u"maincameravideo")
-
-        # Force expansion
         self.maincameravideo.setMinimumSize(QSize(0, 0))
         self.maincameravideo.setMaximumSize(QSize(16777215, 16777215))
         self.maincameravideo.setSizePolicy(
             QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         )
-
-        self.centerLayout.addWidget(self.maincameravideo, 1)  # stretch=1 makes it fill
+        self.centerLayout.addWidget(self.maincameravideo, 1)
 
         # ------------------------------------------------------------
-        # 2) LOWER HUD DOCK (Switch Cameras + WASD)
+        # 2) LOWER HUD DOCK (Battery | Controls | Direction)
         # ------------------------------------------------------------
         self.hudDock = QFrame(self.centralgroup)
         self.hudDock.setObjectName(u"hudDock")
@@ -114,23 +95,46 @@ class Ui_MainWindow(object):
         self.hudDockLayout.setContentsMargins(10, 10, 10, 10)
         self.hudDockLayout.setSpacing(14)
 
-        # Left: camera panel (contains Switch Cameras button)
-        self.maincamerapanel = MainCameraPanel(self.hudDock)
-        self.maincamerapanel.setObjectName(u"maincamerapanel")
-        self.maincamerapanel.setFixedWidth(260)
-        self.hudDockLayout.addWidget(self.maincamerapanel, 0, Qt.AlignLeft | Qt.AlignVCenter)
+        # Battery box LEFT
+        self.batteryDock = QFrame(self.hudDock)
+        self.batteryDock.setObjectName("batteryDock")
+        self.batteryDock.setFixedSize(QSize(260, 170))
+        batteryDockLayout = QVBoxLayout(self.batteryDock)
+        batteryDockLayout.setContentsMargins(8, 8, 8, 8)
+        batteryDockLayout.setSpacing(0)
 
-        self.hudDockLayout.addStretch(1)
+        self.BatteryBox = BatteryStatusWidget(self.batteryDock)
+        self.BatteryBox.setObjectName("BatteryBox")
+        batteryDockLayout.addWidget(self.BatteryBox)
 
-        # Right: teleop visualizer
-        self.wasdwidget = WASDWidget(self.hudDock)
-        self.wasdwidget.setObjectName(u"wasdwidget")
-        self.hudDockLayout.addWidget(self.wasdwidget, 0, Qt.AlignRight | Qt.AlignVCenter)
+        self.hudDockLayout.addWidget(self.batteryDock, 0, Qt.AlignLeft | Qt.AlignVCenter)
+
+        # Controls card MIDDLE
+        # self.controlsDock = QFrame(self.hudDock)
+        # self.controlsDock.setObjectName("controlsDock")
+        # self.controlsDock.setFixedSize(QSize(360, 170))
+        # controlsDockLayout = QVBoxLayout(self.controlsDock)
+        # controlsDockLayout.setContentsMargins(8, 8, 8, 8)
+        # controlsDockLayout.setSpacing(0)
+
+        # self.ControlsHint = ControlsHintWidget(self.controlsDock)
+        # self.ControlsHint.setObjectName("ControlsHint")
+        # controlsDockLayout.addWidget(self.ControlsHint)
+
+        # self.hudDockLayout.addStretch(1)
+        # self.hudDockLayout.addWidget(self.controlsDock, 0, Qt.AlignVCenter)
+        # self.hudDockLayout.addStretch(1)
+
+        # Direction widget RIGHT
+        self.DirectionWidget = DirectionWidget(self.hudDock)
+        self.DirectionWidget.setObjectName(u"DirectionWidget")
+        self.hudDockLayout.addWidget(self.DirectionWidget, 0, Qt.AlignRight | Qt.AlignVCenter)
 
         self.centerLayout.addWidget(self.hudDock, 0)
 
+
         # ------------------------------------------------------------
-        # 3) FLOATING BOTTOM BAR (Start | Timer Pill | Stop | LEDs)
+        # 3) FLOATING BOTTOM BAR (Switch | Start/Pause | Timer | Stop/Reset | LEDs)
         # ------------------------------------------------------------
         self.bottomBarRow = QHBoxLayout()
         self.bottomBarRow.setContentsMargins(0, 0, 0, 0)
@@ -138,30 +142,33 @@ class Ui_MainWindow(object):
         self.bottomBar = QFrame(self.centralgroup)
         self.bottomBar.setObjectName(u"bottomBar")
         self.bottomBar.setFixedHeight(86)
-        self.bottomBar.setMaximumWidth(640)
+        self.bottomBar.setMaximumWidth(780)
 
         self.bottomBarLayout = QHBoxLayout(self.bottomBar)
         self.bottomBarLayout.setContentsMargins(18, 10, 18, 10)
         self.bottomBarLayout.setSpacing(10)
 
-        # Start
+        self.btnSwitchCams = QPushButton(self.bottomBar)
+        self.btnSwitchCams.setObjectName(u"bottomSwitchCamsButton")
+        self.btnSwitchCams.setText("Switch Cameras")
+        self.btnSwitchCams.setFixedSize(QSize(150, 52))
+
         self.btnStart = QPushButton(self.bottomBar)
         self.btnStart.setObjectName(u"bottomStartButton")
         self.btnStart.setText("Start")
         self.btnStart.setFixedSize(QSize(90, 52))
 
-        # Timer pill
         self.timerPill = QFrame(self.bottomBar)
         self.timerPill.setObjectName(u"missionTimerPill")
         self.timerPill.setFixedSize(QSize(170, 60))
 
         self.timerPillLayout = QVBoxLayout(self.timerPill)
-        self.timerPillLayout.setContentsMargins(12, 6, 12, 6)
+        self.timerPillLayout.setContentsMargins(12, 0, 12, 0)
         self.timerPillLayout.setSpacing(0)
 
         self.timerValue = QLabel(self.timerPill)
         self.timerValue.setObjectName(u"missionTimerValue")
-        self.timerValue.setText("0 / 6000s")
+        self.timerValue.setText("00:00.0")
         self.timerValue.setAlignment(Qt.AlignCenter)
 
         f = QFont()
@@ -171,20 +178,18 @@ class Ui_MainWindow(object):
 
         self.timerPillLayout.addWidget(self.timerValue)
 
-        # Stop
         self.btnStop = QPushButton(self.bottomBar)
         self.btnStop.setObjectName(u"bottomStopButton")
         self.btnStop.setText("Stop")
         self.btnStop.setFixedSize(QSize(90, 52))
 
-        # Add control cluster
+        self.bottomBarLayout.addWidget(self.btnSwitchCams)
         self.bottomBarLayout.addWidget(self.btnStart)
         self.bottomBarLayout.addWidget(self.timerPill)
         self.bottomBarLayout.addWidget(self.btnStop)
 
         self.bottomBarLayout.addStretch(1)
 
-        # Status cluster (LINK + RTSP)
         self.statusCluster = QWidget(self.bottomBar)
         self.statusCluster.setObjectName(u"statusCluster")
         self.statusClusterLayout = QHBoxLayout(self.statusCluster)
@@ -230,7 +235,6 @@ class Ui_MainWindow(object):
 
         self.bottomBarLayout.addWidget(self.statusCluster)
 
-        # Center the floating bar
         self.bottomBarRow.addStretch(1)
         self.bottomBarRow.addWidget(self.bottomBar, 0, Qt.AlignHCenter)
         self.bottomBarRow.addStretch(1)
@@ -253,33 +257,59 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         # ============================================================
-        # ---- CAMERA SWITCH WIRING (THIS IS THE IMPORTANT PART) ----
+        # Camera switching wiring
         # ============================================================
         self._camera_sources = [config.RTSP_FRONT, config.RTSP_REAR, config.RTSP_ARM]
         self._camera_idx = 0
 
-        # Find the actual QPushButton inside MainCameraPanel.
-        # Your CameraSwitchButton.ui uses objectName "pushButton".
-        switch_btn = self.maincamerapanel.findChild(QPushButton, "pushButton")
+        def _cycle_camera():
+            self._camera_idx = (self._camera_idx + 1) % len(self._camera_sources)
+            new_url = self._camera_sources[self._camera_idx]
+            self.maincameravideo.switch_camera(new_url)
 
-        # Fallback: first QPushButton in the panel if objectName differs
-        if switch_btn is None:
-            buttons = self.maincamerapanel.findChildren(QPushButton)
-            switch_btn = buttons[0] if buttons else None
+        self.btnSwitchCams.clicked.connect(_cycle_camera)
 
-        if switch_btn is not None:
-            def _cycle_camera():
-                self._camera_idx = (self._camera_idx + 1) % len(self._camera_sources)
-                new_url = self._camera_sources[self._camera_idx]
-                self.maincameravideo.switch_camera(new_url)
+        # ============================================================
+        # Stopwatch
+        # ============================================================
+        self._sw_running = False
+        self._sw_elapsed_ms = 0
+        self._sw_tick_ms = 100
 
-            switch_btn.clicked.connect(_cycle_camera)
-        else:
-            print("[MobilityScreen] WARNING: No camera switch button found inside MainCameraPanel")
+        self._sw_timer = QTimer(MainWindow)
+        self._sw_timer.setInterval(self._sw_tick_ms)
 
-        # Start/Stop control (optional but recommended)
-        self.btnStart.clicked.connect(self.maincameravideo.start_camera)
-        self.btnStop.clicked.connect(self.maincameravideo.stop_camera)
+        def _format_ms(ms: int) -> str:
+            total = ms / 1000.0
+            minutes = int(total // 60)
+            seconds = total - (minutes * 60)
+            return f"{minutes:02d}:{seconds:04.1f}"
+
+        def _sw_tick():
+            self._sw_elapsed_ms += self._sw_tick_ms
+            self.timerValue.setText(_format_ms(self._sw_elapsed_ms))
+
+        self._sw_timer.timeout.connect(_sw_tick)
+
+        def _sw_toggle():
+            if not self._sw_running:
+                self._sw_timer.start()
+                self._sw_running = True
+                self.btnStart.setText("Pause")
+            else:
+                self._sw_timer.stop()
+                self._sw_running = False
+                self.btnStart.setText("Start")
+
+        def _sw_reset():
+            self._sw_timer.stop()
+            self._sw_running = False
+            self._sw_elapsed_ms = 0
+            self.timerValue.setText("00:00.0")
+            self.btnStart.setText("Start")
+
+        self.btnStart.clicked.connect(_sw_toggle)
+        self.btnStop.clicked.connect(_sw_reset)
 
         # Auto-start the default stream
         self.maincameravideo.start_camera()

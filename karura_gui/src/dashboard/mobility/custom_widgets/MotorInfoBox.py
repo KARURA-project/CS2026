@@ -1,285 +1,111 @@
 # -*- coding: utf-8 -*-
 
-################################################################################
-## Form generated from reading UI file 'MotorInfoBox.ui'
-##
-## Created by: Qt User Interface Compiler version 6.10.0
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
+from PySide6.QtCore import QCoreApplication, QMetaObject, QSize, Qt
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import QGroupBox, QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QGroupBox, QHBoxLayout, QLabel,
-    QProgressBar, QSizePolicy, QSpacerItem, QVBoxLayout,
-    QWidget)
 
 class Ui_MotorInfoBox(object):
     def setupUi(self, MotorInfoBox):
         if not MotorInfoBox.objectName():
             MotorInfoBox.setObjectName(u"MotorInfoBox")
-        MotorInfoBox.resize(200, 100)
-        MotorInfoBox.setMinimumSize(QSize(0, 100))
-        MotorInfoBox.setMaximumSize(QSize(16777215, 165))
-        MotorInfoBox.setBaseSize(QSize(0, 0))
-        font = QFont()
-        font.setFamilies([u"Sans Serif"])
-        font.setPointSize(9)
-        MotorInfoBox.setFont(font)
-        MotorInfoBox.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-        MotorInfoBox.setStyleSheet(u"background-color: rgb(54, 54, 54);")
+
+        MotorInfoBox.resize(200, 120)
+        MotorInfoBox.setMinimumSize(QSize(0, 120))
+        MotorInfoBox.setMaximumSize(QSize(16777215, 180))
+        MotorInfoBox.setAttribute(Qt.WA_StyledBackground, True)
+
+        # Let karura_dark.qss drive styling (do not hardcode backgrounds here)
+        MotorInfoBox.setStyleSheet(u"")
+
+        # =========================
+        # Layout
+        # =========================
         self.verticalLayout = QVBoxLayout(MotorInfoBox)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(10, 10, 10, 10)
+        self.verticalLayout.setSpacing(8)
+
+        # =========================
+        # Title
+        # =========================
         self.motor_name = QLabel(MotorInfoBox)
         self.motor_name.setObjectName(u"motor_name")
-        palette = QPalette()
-        brush = QBrush(QColor(255, 255, 255, 255))
-        brush.setStyle(Qt.BrushStyle.SolidPattern)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.WindowText, brush)
-        brush1 = QBrush(QColor(54, 54, 54, 255))
-        brush1.setStyle(Qt.BrushStyle.SolidPattern)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Button, brush1)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Text, brush)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.ButtonText, brush)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Base, brush1)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Window, brush1)
-        brush2 = QBrush(QColor(255, 255, 255, 128))
-        brush2.setStyle(Qt.BrushStyle.SolidPattern)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.WindowText, brush)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Button, brush1)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Text, brush)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.ButtonText, brush)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Base, brush1)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.WindowText, brush)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Button, brush1)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Text, brush)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ButtonText, brush)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Base, brush1)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        self.motor_name.setPalette(palette)
-        font1 = QFont()
-        font1.setPointSize(11)
-        self.motor_name.setFont(font1)
-        self.motor_name.setStyleSheet(u"color: rgb(255, 255, 255);")
-        self.motor_name.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
+        f_title = QFont()
+        f_title.setPointSize(11)
+        f_title.setBold(True)
+        self.motor_name.setFont(f_title)
+        self.motor_name.setAlignment(Qt.AlignCenter)
         self.verticalLayout.addWidget(self.motor_name)
 
+        # =========================
+        # Speed row
+        # =========================
         self.SpeedGroup = QGroupBox(MotorInfoBox)
         self.SpeedGroup.setObjectName(u"SpeedGroup")
-        self.SpeedGroup.setEnabled(True)
-        self.SpeedGroup.setMinimumSize(QSize(90, 20))
-        self.SpeedGroup.setMaximumSize(QSize(120, 16777215))
-        self.SpeedGroup.setStyleSheet(u"QGroupBox {\n"
-"    border: 0px;\n"
-"}")
-        self.SpeedGroup.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
+        self.SpeedGroup.setTitle("")
         self.SpeedGroup.setFlat(True)
-        self.SpeedGroup.setCheckable(False)
-        self.horizontalLayout_2 = QHBoxLayout(self.SpeedGroup)
-        self.horizontalLayout_2.setSpacing(0)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.SpeedGroup.setStyleSheet("QGroupBox{border:0;}")
+
+        self.speedRow = QHBoxLayout(self.SpeedGroup)
+        self.speedRow.setObjectName("speedRow")
+        self.speedRow.setContentsMargins(0, 0, 0, 0)
+        self.speedRow.setSpacing(6)
+
         self.speed_label = QLabel(self.SpeedGroup)
         self.speed_label.setObjectName(u"speed_label")
-        self.speed_label.setMaximumSize(QSize(90, 16777215))
-        palette1 = QPalette()
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.WindowText, brush)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Button, brush1)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Text, brush)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.ButtonText, brush)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Base, brush1)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.WindowText, brush)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Button, brush1)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Text, brush)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.ButtonText, brush)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Base, brush1)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.WindowText, brush)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Button, brush1)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Text, brush)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ButtonText, brush)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Base, brush1)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        self.speed_label.setPalette(palette1)
-        font2 = QFont()
-        font2.setFamilies([u"Sans Serif"])
-        self.speed_label.setFont(font2)
-        self.speed_label.setStyleSheet(u"color: rgb(255, 255, 255);")
-
-        self.horizontalLayout_2.addWidget(self.speed_label)
+        self.speed_label.setText("Speed:")
+        self.speedRow.addWidget(self.speed_label, 0, Qt.AlignLeft)
 
         self.speed_value = QLabel(self.SpeedGroup)
         self.speed_value.setObjectName(u"speed_value")
-        self.speed_value.setMaximumSize(QSize(30, 16777215))
-        palette2 = QPalette()
-        palette2.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.WindowText, brush)
-        palette2.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Button, brush1)
-        palette2.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Text, brush)
-        palette2.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.ButtonText, brush)
-        palette2.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Base, brush1)
-        palette2.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette2.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        palette2.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.WindowText, brush)
-        palette2.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Button, brush1)
-        palette2.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Text, brush)
-        palette2.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.ButtonText, brush)
-        palette2.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Base, brush1)
-        palette2.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette2.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        palette2.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.WindowText, brush)
-        palette2.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Button, brush1)
-        palette2.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Text, brush)
-        palette2.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ButtonText, brush)
-        palette2.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Base, brush1)
-        palette2.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette2.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        self.speed_value.setPalette(palette2)
-        self.speed_value.setStyleSheet(u"color: rgb(255, 255, 255);")
-        self.speed_value.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.horizontalLayout_2.addWidget(self.speed_value)
-
+        self.speed_value.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        f_val = QFont()
+        f_val.setPointSize(10)
+        f_val.setBold(True)
+        self.speed_value.setFont(f_val)
+        self.speedRow.addWidget(self.speed_value, 1)
 
         self.verticalLayout.addWidget(self.SpeedGroup)
 
-        self.BatteryGroup = QGroupBox(MotorInfoBox)
-        self.BatteryGroup.setObjectName(u"BatteryGroup")
-        self.BatteryGroup.setMinimumSize(QSize(0, 30))
-        font3 = QFont()
-        font3.setPointSize(9)
-        self.BatteryGroup.setFont(font3)
-        self.BatteryGroup.setStyleSheet(u"QGroupBox {\n"
-"    border: 0px;\n"
-"}")
-        self.BatteryGroup.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
-        self.horizontalLayout = QHBoxLayout(self.BatteryGroup)
-        self.horizontalLayout.setSpacing(0)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.battery_label = QLabel(self.BatteryGroup)
-        self.battery_label.setObjectName(u"battery_label")
-        palette3 = QPalette()
-        palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.WindowText, brush)
-        palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Button, brush1)
-        palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Text, brush)
-        palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.ButtonText, brush)
-        palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Base, brush1)
-        palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette3.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        palette3.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.WindowText, brush)
-        palette3.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Button, brush1)
-        palette3.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Text, brush)
-        palette3.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.ButtonText, brush)
-        palette3.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Base, brush1)
-        palette3.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette3.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        palette3.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.WindowText, brush)
-        palette3.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Button, brush1)
-        palette3.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Text, brush)
-        palette3.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ButtonText, brush)
-        palette3.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Base, brush1)
-        palette3.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette3.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        self.battery_label.setPalette(palette3)
-        self.battery_label.setStyleSheet(u"color: rgb(255, 255, 255);a")
+        # =========================
+        # Angle row (steering angle)
+        # =========================
+        self.AngleGroup = QGroupBox(MotorInfoBox)
+        self.AngleGroup.setObjectName(u"AngleGroup")
+        self.AngleGroup.setTitle("")
+        self.AngleGroup.setFlat(True)
+        self.AngleGroup.setStyleSheet("QGroupBox{border:0;}")
 
-        self.horizontalLayout.addWidget(self.battery_label)
+        self.angleRow = QHBoxLayout(self.AngleGroup)
+        self.angleRow.setObjectName("angleRow")
+        self.angleRow.setContentsMargins(0, 0, 0, 0)
+        self.angleRow.setSpacing(6)
 
-        self.horizontalSpacer = QSpacerItem(10, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+        self.angle_label = QLabel(self.AngleGroup)
+        self.angle_label.setObjectName(u"angle_label")
+        self.angle_label.setText("Angle:")
+        self.angleRow.addWidget(self.angle_label, 0, Qt.AlignLeft)
 
-        self.horizontalLayout.addItem(self.horizontalSpacer)
+        self.angle_value = QLabel(self.AngleGroup)
+        self.angle_value.setObjectName(u"angle_value")
+        self.angle_value.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.angle_value.setFont(f_val)
+        self.angleRow.addWidget(self.angle_value, 1)
 
-        self.battery_bar = QProgressBar(self.BatteryGroup)
-        self.battery_bar.setObjectName(u"battery_bar")
-        self.battery_bar.setMinimumSize(QSize(0, 20))
-        palette4 = QPalette()
-        palette4.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.WindowText, brush)
-        palette4.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Button, brush1)
-        palette4.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Text, brush)
-        palette4.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.ButtonText, brush)
-        palette4.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Base, brush1)
-        palette4.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette4.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        palette4.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.WindowText, brush)
-        palette4.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Button, brush1)
-        palette4.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Text, brush)
-        palette4.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.ButtonText, brush)
-        palette4.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Base, brush1)
-        palette4.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette4.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        palette4.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.WindowText, brush)
-        palette4.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Button, brush1)
-        palette4.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Text, brush)
-        palette4.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ButtonText, brush)
-        palette4.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Base, brush1)
-        palette4.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Window, brush1)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette4.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.PlaceholderText, brush2)
-#endif
-        self.battery_bar.setPalette(palette4)
-        self.battery_bar.setStyleSheet(u"color: rgb(255, 255, 255);")
-        self.battery_bar.setValue(100)
+        self.angle_units = QLabel(self.AngleGroup)
+        self.angle_units.setObjectName(u"angle_units")
+        self.angle_units.setText("deg")
+        self.angle_units.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.angleRow.addWidget(self.angle_units, 0)
 
-        self.horizontalLayout.addWidget(self.battery_bar)
-
-
-        self.verticalLayout.addWidget(self.BatteryGroup, 0, Qt.AlignmentFlag.AlignVCenter)
-
+        self.verticalLayout.addWidget(self.AngleGroup)
 
         self.retranslateUi(MotorInfoBox)
-
         QMetaObject.connectSlotsByName(MotorInfoBox)
-    # setupUi
 
     def retranslateUi(self, MotorInfoBox):
-        MotorInfoBox.setWindowTitle(QCoreApplication.translate("MotorInfoBox", u"Form", None))
-        self.motor_name.setText(QCoreApplication.translate("MotorInfoBox", u"Motor Name", None))
-        self.SpeedGroup.setTitle("")
-        self.speed_label.setText(QCoreApplication.translate("MotorInfoBox", u"Speed (rad/s): ", None))
-        self.speed_value.setText(QCoreApplication.translate("MotorInfoBox", u"100", None))
-        self.BatteryGroup.setTitle("")
-        self.battery_label.setText(QCoreApplication.translate("MotorInfoBox", u"Battery", None))
-    # retranslateUi
-
+        MotorInfoBox.setWindowTitle(QCoreApplication.translate("MotorInfoBox", u"MotorInfoBox", None))
+        self.motor_name.setText(QCoreApplication.translate("MotorInfoBox", u"Motor", None))
+        self.speed_value.setText(QCoreApplication.translate("MotorInfoBox", u"NULL", None))
+        self.angle_value.setText(QCoreApplication.translate("MotorInfoBox", u"NULL", None))

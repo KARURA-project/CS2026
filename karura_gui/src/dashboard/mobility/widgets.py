@@ -1,292 +1,388 @@
 from PySide6.QtWidgets import (
-    QApplication, 
-    QWidget, 
-    QVBoxLayout, 
-    QHBoxLayout, 
-    QGridLayout, 
-    QProgressBar, 
-    QPushButton, 
-    QLabel, 
-    QSizePolicy
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QGridLayout,
+    QPushButton,
+    QLabel,
+    QSizePolicy,
 )
 from PySide6.QtCore import (
-    QTimer, 
-    Signal, 
-    Slot, 
-    Qt, 
-    QCoreApplication
+    QTimer,
+    Qt,
+    QCoreApplication,
 )
+
 from .custom_widgets.MotorInfoBox import Ui_MotorInfoBox
-# from .custom_widgets.CameraSwitchButton import CameraSwitchButton
-from .custom_widgets.MobilityControls import Ui_MobilityControls
-from .custom_widgets.IMUWidget import Ui_IMUWidget
-from .custom_widgets.TimerButtonPanel import Ui_TimerButtonPanel
-from .custom_widgets.WASDWidget import Ui_WASDWidget
+from .custom_widgets.DirectionWidget import Ui_DirectionWidget
+
 import math
-#Initalizes QT widgets
+import time
+
+
+# ============================================================
+# MotorInfoBox wrapper (logic + null handling)
+# ============================================================
 class MotorInfoBox(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        #Sets the UI to use the one made by designer
         self.ui = Ui_MotorInfoBox()
         self.ui.setupUi(self)
 
-# class NetworkStatus(QWidget):
+        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setObjectName("motorInfoCard")
+
+        self.set_null()
+
+    def set_name(self, name: str):
+        self.ui.motor_name.setText(QCoreApplication.translate("MotorInfoBox", name, None))
+
+    def set_null(self):
+        self.ui.speed_value.setText(QCoreApplication.translate("MotorInfoBox", "NULL", None))
+        self.ui.angle_value.setText(QCoreApplication.translate("MotorInfoBox", "NULL", None))
+
+    def set_values(self, speed, angle_deg):
+        # Speed
+        if speed is None:
+            self.ui.speed_value.setText(QCoreApplication.translate("MotorInfoBox", "NULL", None))
+        else:
+            self.ui.speed_value.setText(QCoreApplication.translate("MotorInfoBox", f"{float(speed):.2f}", None))
+
+        # Angle
+        if angle_deg is None:
+            self.ui.angle_value.setText(QCoreApplication.translate("MotorInfoBox", "NULL", None))
+        else:
+            self.ui.angle_value.setText(QCoreApplication.translate("MotorInfoBox", f"{float(angle_deg):.1f}", None))
+
+
+# ============================================================
+# Battery status box (single rover battery)
+# ============================================================
+class BatteryStatusWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        # Make QSS backgrounds actually paint on this widget
+        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setObjectName("BatteryStatusWidget")
+
+        root = QVBoxLayout(self)
+        # tighter top padding to remove empty space above title
+        root.setContentsMargins(14, 10, 14, 12)
+        root.setSpacing(10)
+
+        # Title
+        self.title = QLabel("Battery", self)
+        self.title.setObjectName("batteryTitle")
+        self.title.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        root.addWidget(self.title)
+
+        # Rows container
+        rows = QVBoxLayout()
+        rows.setContentsMargins(0, 0, 0, 0)
+        rows.setSpacing(8)
+
+        def mk_row(label_text: str, unit_text: str, value_object_name: str):
+            row = QHBoxLayout()
+            row.setContentsMargins(0, 0, 0, 0)
+            row.setSpacing(10)
+
+            lbl = QLabel(label_text, self)
+            lbl.setObjectName("batteryKey")
+            lbl.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+            val = QLabel("NULL", self)
+            val.setObjectName(value_object_name)
+            val.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+            unit = QLabel(unit_text, self)
+            unit.setObjectName("batteryUnit")
+            unit.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+            row.addWidget(lbl, 1)
+            row.addWidget(val, 0)
+            row.addWidget(unit, 0)
+
+            return row, val
+
+        r1, self.voltageValue = mk_row("Voltage:", "[V]", "batteryVoltageValue")
+        r2, self.powerValue   = mk_row("Power:",   "[W]", "batteryPowerValue")
+        r3, self.remainValue  = mk_row("Remaining:", "[%]", "batteryRemainValue")
+
+        rows.addLayout(r1)
+        rows.addLayout(r2)
+        rows.addLayout(r3)
+
+        root.addLayout(rows)
+
+    # Optional helpers so your ROS subscriber can update these easily
+    def set_null(self):
+        self.voltageValue.setText("NULL")
+        self.powerValue.setText("NULL")
+        self.remainValue.setText("NULL")
+
+    def set_values(self, voltage=None, power=None, remaining=None):
+        self.voltageValue.setText("NULL" if voltage is None else f"{voltage:.2f}")
+        self.powerValue.setText("NULL" if power is None else f"{power:.2f}")
+        self.remainValue.setText("NULL" if remaining is None else f"{remaining:.0f}")
+
+# class ControlsHintWidget(QWidget):
 #     def __init__(self, parent=None):
 #         super().__init__(parent)
+#         self.setAttribute(Qt.WA_StyledBackground, True)
+#         self.setObjectName("ControlsHintWidget")
 
-#         #Sets the UI to use the one made by designer
-#         self.ui = Ui_NetworkStatus()
-#         self.ui.setupUi(self)
+#         root = QVBoxLayout(self)
+#         root.setContentsMargins(14, 10, 14, 12)
+#         root.setSpacing(8)
 
-class TimerButtonPanel(QWidget):
+#         title = QLabel("Controls", self)
+#         title.setObjectName("controlsTitle")
+#         root.addWidget(title)
+
+#         body = QLabel(self)
+#         body.setObjectName("controlsBody")
+#         body.setWordWrap(True)
+#         body.setText(
+#             "Joystick:\n"
+#             "  • Left stick: drive\n"
+#             "  • Right stick: rotate\n"
+#             "  • Bumpers/Triggers: speed ±\n"
+#             "Keyboard (teleop_twist_keyboard):\n"
+#         )
+#         root.addWidget(body, 1)
+
+# ============================================================
+# Direction widget (your existing class should stay here)
+# ============================================================
+class DirectionWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        #Sets the UI to use the one made by designer
-        self.ui = Ui_TimerButtonPanel()
+        self.ui = Ui_DirectionWidget()
         self.ui.setupUi(self)
 
-class WASDWidget(QWidget):
-    """
-    Teleop key visualizer for teleop_twist_keyboard:
-      u i o
-      j k l
-      m , .
-
-    Highlights pressed keys. Handles uppercase (Shift) by treating it as the same key.
-    """
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.ui = Ui_WASDWidget()
-        self.ui.setupUi(self)
-
-        # Make this widget receive keyboard events
         self.setFocusPolicy(Qt.StrongFocus)
 
-        # Two styles: idle vs active
         self.idle_style = self.ui.base_style
         self.active_style = """
             QLabel {
-                background-color: #3A1C22;   /* deep red highlight */
+                background-color: #3A1C22;
                 color: #F2F2F2;
                 border: 1px solid #E05E5E;
                 border-radius: 10px;
                 font-weight: 900;
-                font-size: 16px;
+                font-size: 18px;
                 padding: 6px;
             }
         """
 
-        # Map keys to labels
-        self.key_map = {
-            "u": self.ui.keyU,
-            "i": self.ui.keyI,
-            "o": self.ui.keyO,
-            "j": self.ui.keyJ,
-            "k": self.ui.keyK,
-            "l": self.ui.keyL,
-            "m": self.ui.keyM,
-            ",": self.ui.keyComma,
-            ".": self.ui.keyDot,
+        self._labels = {
+            "fwd": self.ui.keyForward,
+            "back": self.ui.keyBack,
+            "left": self.ui.keyLeft,
+            "right": self.ui.keyRight,
+            "rotl": self.ui.keyRotateLeft,
+            "rotr": self.ui.keyRotateRight,
+            "spd_up": (self.ui.keySpeedUpTop, self.ui.keySpeedUpBot),
+            "spd_dn": (self.ui.keySpeedDownTop, self.ui.keySpeedDownBot),
         }
 
-        # Track which keys are currently down (to handle repeats cleanly)
-        self._pressed = set()
+        self._pressed_dirs = set()
 
-    def set_key_active(self, ch: str, active: bool):
-        ch = ch.lower()
-        if ch not in self.key_map:
-            return
-        lbl = self.key_map[ch]
+        self._key_to_dir = {
+            Qt.Key_Up: "fwd",
+            Qt.Key_Down: "back",
+            Qt.Key_Left: "left",
+            Qt.Key_Right: "right",
+        }
+
+        self._key_to_dir_extra = {
+            Qt.Key_Q: "rotl",
+            Qt.Key_E: "rotr",
+        }
+
+        self._key_speed_up = {Qt.Key_Plus, Qt.Key_Equal}
+        self._key_speed_dn = {Qt.Key_Minus, Qt.Key_Underscore}
+
+        self._lin_thresh = 0.05
+        self._ang_thresh = 0.05
+        self._strafe_thresh = 0.05
+
+        self._apply_all_idle()
+
+    def _set_label_active(self, lbl, active: bool):
         lbl.setStyleSheet(self.active_style if active else self.idle_style)
 
+    def _apply_all_idle(self):
+        for v in self._labels.values():
+            if isinstance(v, tuple):
+                for lbl in v:
+                    self._set_label_active(lbl, False)
+            else:
+                self._set_label_active(v, False)
+
+    def _set_dir(self, name: str, active: bool):
+        v = self._labels.get(name)
+        if v is None:
+            return
+        if isinstance(v, tuple):
+            for lbl in v:
+                self._set_label_active(lbl, active)
+        else:
+            self._set_label_active(v, active)
+
+    def clear(self):
+        self._pressed_dirs.clear()
+        self._apply_all_idle()
+
+    def set_twist(self, linear_x: float, angular_z: float, strafe_y: float = 0.0):
+        for name in ("fwd", "back", "left", "right", "rotl", "rotr"):
+            self._set_dir(name, False)
+
+        if linear_x > self._lin_thresh:
+            self._set_dir("fwd", True)
+        elif linear_x < -self._lin_thresh:
+            self._set_dir("back", True)
+
+        if strafe_y > self._strafe_thresh:
+            self._set_dir("left", True)
+        elif strafe_y < -self._strafe_thresh:
+            self._set_dir("right", True)
+
+        if angular_z > self._ang_thresh:
+            self._set_dir("rotl", True)
+        elif angular_z < -self._ang_thresh:
+            self._set_dir("rotr", True)
+
     def keyPressEvent(self, event):
-        text = event.text()
-        if not text:
-            return super().keyPressEvent(event)
-
-        ch = text.lower()
-
-        # Ignore auto-repeat spam (optional)
         if event.isAutoRepeat():
             return
+        key = event.key()
 
-        if ch in self.key_map:
-            self._pressed.add(ch)
-            self.set_key_active(ch, True)
+        if key in self._key_to_dir:
+            d = self._key_to_dir[key]
+            self._pressed_dirs.add(d)
+            self._set_dir(d, True)
+            return
+
+        if key in self._key_to_dir_extra:
+            d = self._key_to_dir_extra[key]
+            self._pressed_dirs.add(d)
+            self._set_dir(d, True)
+            return
+
+        if key in self._key_speed_up:
+            self._set_dir("spd_up", True)
+            return
+
+        if key in self._key_speed_dn:
+            self._set_dir("spd_dn", True)
+            return
 
         return super().keyPressEvent(event)
 
     def keyReleaseEvent(self, event):
-        text = event.text()
-        if not text:
-            return super().keyReleaseEvent(event)
-
-        ch = text.lower()
-
         if event.isAutoRepeat():
             return
+        key = event.key()
 
-        if ch in self._pressed:
-            self._pressed.remove(ch)
-            self.set_key_active(ch, False)
+        if key in self._key_to_dir:
+            d = self._key_to_dir[key]
+            if d in self._pressed_dirs:
+                self._pressed_dirs.remove(d)
+            self._set_dir(d, False)
+            return
+
+        if key in self._key_to_dir_extra:
+            d = self._key_to_dir_extra[key]
+            if d in self._pressed_dirs:
+                self._pressed_dirs.remove(d)
+            self._set_dir(d, False)
+            return
+
+        if key in self._key_speed_up:
+            self._set_dir("spd_up", False)
+            return
+
+        if key in self._key_speed_dn:
+            self._set_dir("spd_dn", False)
+            return
 
         return super().keyReleaseEvent(event)
 
 
-class TimerBarWidget(QWidget):
-    def __init__(self, total_seconds=300, parent=None):
-        super().__init__(parent)
-        
-        # Configuration
-        self.total_seconds = total_seconds
-        self.remaining_ms = total_seconds * 1000
-        self.timer_interval = 100  # Update every 100ms for smoothness
-        
-        # Setup UI
-        self.layout = QVBoxLayout(self)
-        self.layout.setContentsMargins(0, 0, 0, 0) # Ensures full width
-        
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setRange(0, self.total_seconds)
-        self.progress_bar.setValue(self.total_seconds)
-        self.progress_bar.setTextVisible(True)
-        self.progress_bar.setFormat(f"%v / {self.total_seconds}s")
-        
-        self.layout.addWidget(self.progress_bar)
-        
-        # Internal Timer
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self._update_progress)
-        
-    def _update_progress(self):
-        if self.remaining_ms > 0:
-            self.remaining_ms -= self.timer_interval
-            # Display current progress (counting up)
-            elapsed = self.remaining_ms
-            self.progress_bar.setValue(elapsed / 1000)
-            self.progress_bar.setFormat(f"{elapsed/1000:.1f}s / {self.total_seconds}s")
-        else:
-            self.stop()
-
-    @Slot()
-    def start(self):
-        if self.remaining_ms > 0:
-            self.timer.start(self.timer_interval)
-
-    @Slot()
-    def pause(self):
-        self.timer.stop()
-
-    @Slot()
-    def stop(self):
-        self.timer.stop()
-        self.remaining_ms = self.total_seconds * 1000
-        self.progress_bar.setValue(self.total_seconds)
-        self.progress_bar.setFormat(f"%v / {self.total_seconds}s")
-
-
-class MobilityControls(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        #Sets the UI to use the one made by designer
-        self.ui = Ui_MobilityControls()
-        self.ui.setupUi(self)
-
-        self.ui.triangledown.clicked.connect(lambda: print("Down clicked"))
-        self.ui.triangleup.clicked.connect(lambda: print("Up clicked"))
-        self.ui.triangleleft.clicked.connect(lambda: print("Left clicked"))
-        self.ui.triangleright.clicked.connect(lambda: print("Right clicked"))
-
-class IMUWidget(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        #Sets the UI to use the one made by designer
-        self.ui = Ui_IMUWidget()
-        self.ui.setupUi(self)
-
-#Initalizes python widgets
-class CameraWidget(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.label = QLabel("Camera")
-
-#Initalizes panels
-class MainCameraPanel(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        layout = QVBoxLayout(self)
-        layout.setSpacing(0)
-        layout.setContentsMargins(0, 0, 0, 0)
-
-        # Plain working button
-        self.camera_switch_button = QPushButton("Switch Cameras", self)
-
-        # IMPORTANT: MobilityScreen.py looks for objectName "pushButton"
-        self.camera_switch_button.setObjectName("pushButton")
-
-        layout.addWidget(self.camera_switch_button)
-
-        self.setMaximumWidth(200)
-        self.setMaximumHeight(170)
-
+# ============================================================
+# Motor panel (2x2 fixed, TL/TR/BL/BR) with speed + angle
+# ============================================================
 class MotorInfoPanel(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.motors = []  
         self.columns = 2
+        self.motors = []
 
-        self.layout = QGridLayout()
-        self.setLayout(self.layout)
-        self.setFixedSize(400, 400)
-        self.setMaximumHeight(1000)
+        self.layout = QGridLayout(self)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setSpacing(12)
 
-    def update_ui(self):
-        #Manually updates the size of the box
-        self.setFixedSize(400, 100 * math.ceil(len(self.motors) / self.columns))
+        self._names = [
+            "Motor 1 (TL)",
+            "Motor 2 (TR)",
+            "Motor 3 (BL)",
+            "Motor 4 (BR)",
+        ]
 
-    def add_battery(self):
-        mot = MotorInfoBox()
+        for i in range(4):
+            box = MotorInfoBox(self)
+            box.set_name(self._names[i])
+            box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+            box.setMinimumHeight(130)
 
-        #Makes background color show
-        mot.setAttribute(Qt.WA_StyledBackground, True)
+            self.motors.append(box)
 
-        # FORCE every widget to expand but NEVER overlap
-        mot.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            row = i // self.columns
+            col = i % self.columns
+            self.layout.addWidget(box, row, col)
 
-        index = len(self.motors)
-        self.motors.append(mot)
+        self._last_update_ms = None
+        self._stale_timeout_ms = 1500
 
-        row = index // self.columns
-        col = index % self.columns
+        self._stale_timer = QTimer(self)
+        self._stale_timer.setInterval(250)
+        self._stale_timer.timeout.connect(self._check_stale)
+        self._stale_timer.start()
 
-        self.update_ui()
+    def _now_ms(self):
+        return int(time.time() * 1000)
 
-        self.layout.addWidget(mot, row, col)
-
-        return mot
-    
-    def update_values(self, arr):
-        """
-        Update each motor's speed and battery display.
-
-        Only updates if `arr` length matches `self.motors`. Each entry in `arr` must be an
-        object with `.speed` and `.battery` values.
-        """
-
-        #Checks if the arr length equals the number of batteries
-        if(len(arr) != len(self.motors)):
+    def _check_stale(self):
+        if self._last_update_ms is None:
             return
-        
-        #Updates each value. 
-        for i in range(0, len(arr)):
-            print(arr[i])
-            self.motors[i].ui.speed_value.setText(QCoreApplication.translate("MotorInfoBox", u"{value}".format(value = arr[i]["speed"]), None))
-            self.motors[i].ui.battery_bar.setValue(arr[i]["battery"])
-        
+        if (self._now_ms() - self._last_update_ms) > self._stale_timeout_ms:
+            self.set_all_null()
+            self._last_update_ms = None
+
+    def set_all_null(self):
+        for m in self.motors:
+            m.set_null()
+
+    def update_from_ros(self, speeds=None, angles_deg=None):
+        """
+        speeds: list/tuple/dict for indices 0..3
+        angles_deg: list/tuple/dict for indices 0..3 (steering angle in degrees)
+        """
+        self._last_update_ms = self._now_ms()
+
+        def _get(src, idx):
+            if src is None:
+                return None
+            if isinstance(src, dict):
+                return src.get(idx, None)
+            if isinstance(src, (list, tuple)):
+                return src[idx] if idx < len(src) else None
+            return None
+
+        for i in range(4):
+            spd = _get(speeds, i)
+            ang = _get(angles_deg, i)
+            self.motors[i].set_values(spd, ang)

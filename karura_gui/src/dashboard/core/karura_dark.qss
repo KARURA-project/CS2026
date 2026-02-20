@@ -1,6 +1,6 @@
 /* ==============================
    Karura Dark Red Theme (PySide6)
-   - Charcoal + warm darks (no navy)
+   - Charcoal + warm darks 
    - Subtle red accents
    ============================== */
 
@@ -282,3 +282,113 @@ QLabel#ledWarn {
     background-color: #F1C40F;
     border-radius: 5px;
 }
+/* ---- HUD strip should not look like a huge bordered box ---- */
+QFrame#hudDock {
+    background: transparent;
+    border: 0px;
+}
+
+/* Put the direction widget on a clean rounded chip */
+QFrame#directionDock {
+    background-color: rgba(33, 24, 25, 220);
+    border: 1px solid #3A2426;
+    border-radius: 18px;
+}
+
+/* Timer label must not draw a background rectangle */
+QLabel#missionTimerValue {
+    background: transparent;
+    border: 0px;
+}
+
+/* Switch Cameras button matches bottom buttons */
+QPushButton#bottomSwitchCamsButton {
+    background-color: rgba(22, 16, 16, 210);
+    border: 1px solid #5A3336;
+    border-radius: 14px;
+    font-weight: 850;
+    padding: 8px 14px;
+    min-width: 140px;
+}
+QPushButton#bottomSwitchCamsButton:hover {
+    border: 1px solid #C84E55;
+    background-color: rgba(30, 18, 18, 230);
+}
+
+/* Motor cards should match the theme */
+QWidget#motorInfoCard {
+    background-color: rgba(33, 24, 25, 220);
+    border: 1px solid #3A2426;
+    border-radius: 14px;
+}
+
+/* Battery card in HUD */
+QFrame#batteryDock {
+    background-color: rgba(33, 24, 25, 220);
+    border: 1px solid #3A2426;
+    border-radius: 18px;
+}
+
+/* The actual widget surface must be rounded too (this is the black interior) */
+QWidget#BatteryStatusWidget {
+    background-color: rgba(15, 11, 12, 235);
+    border-radius: 16px;
+}
+
+/* Title + text sizing (slightly larger to compensate tighter padding) */
+QLabel#batteryTitle {
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.4px;
+    background: transparent;
+}
+
+QLabel#batteryKey {
+    font-size: 13px;
+    font-weight: 650;
+    color: #E6DEDE;
+    background: transparent;
+}
+
+QLabel#batteryUnit {
+    font-size: 12px;
+    font-weight: 650;
+    color: #C8BEBF;
+    background: transparent;
+}
+
+QLabel#batteryVoltageValue,
+QLabel#batteryPowerValue,
+QLabel#batteryRemainValue {
+    font-size: 13px;
+    font-weight: 900;
+    background: transparent;
+}
+
+
+QFrame#controlsDock {
+    background-color: rgba(33, 24, 25, 220);
+    border: 1px solid #3A2426;
+    border-radius: 18px;
+}
+
+QWidget#ControlsHintWidget {
+    background-color: rgba(15, 11, 12, 235);
+    border-radius: 16px;
+}
+
+QLabel#controlsTitle {
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.4px;
+    background: transparent;
+}
+
+QLabel#controlsBody {
+    font-size: 12px;
+    font-weight: 650;
+    color: #D8D0D0;
+    background: transparent;
+    line-height: 1.2;
+}
+
