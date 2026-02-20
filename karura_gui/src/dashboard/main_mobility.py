@@ -28,6 +28,13 @@ def main():
         window = MobilityMainWindow()
         window.bridge = bridge
         window.connect_signals(bridge)
+
+        #Connects signals to UI to display ROS2 data
+        if hasattr(window, "battery_status"):
+            bridge.battery_data_signal.connect(
+                lambda msg: window.battery_status.set_values(remaining=msg.data)
+            )
+
         window.show()
         
         def start_camera_if_present():

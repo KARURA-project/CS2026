@@ -37,7 +37,7 @@ class BaseDashboardNode(Node):
         self.__callbacks[name] = callback
         
     def _dispatch(self,name:str,msg):
-        print(f"DEBUG: Dispatching {name}")
+        #print(f"DEBUG: Dispatching {name}")
         callback = self.__callbacks.get(name)
         if callback:
             callback(msg)

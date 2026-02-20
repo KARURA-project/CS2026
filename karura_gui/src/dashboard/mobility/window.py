@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import QMainWindow
+from PySide6.QtCore import Slot
 from .MobilityScreen import Ui_MainWindow
 
 
@@ -18,3 +19,14 @@ class MobilityMainWindow(QMainWindow):
 
     def connect_signals(self, bridge):
         self.bridge = bridge
+        # This will now work because self.battery_status is defined
+        bridge.battery_data_signal.connect(self._update_battery_ui)
+
+    @Slot(object) 
+    def _update_battery_ui(self, msg):
+        if hasattr(self.ui, "BatteryBox"):
+            percentage = float(msg)
+            
+            self.ui.BatteryBox.set_values(remaining=percentage)
+        else:
+            print("[WARN] Battery widget not found in UI")
