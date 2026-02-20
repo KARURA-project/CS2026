@@ -53,10 +53,11 @@ def main():
                     if hasattr(obj, attr):
                         w = getattr(obj, attr)
                         if hasattr(w, "start_camera"):
-                            print(f"[Main] Starting camera via {obj.__class__.__name__}.{attr}",
-                                file=sys.stderr, flush=True)
-                            w.start_camera()
-                            return
+                            print("Camera on pause for now. Change in main_mobility.py")
+                            # print(f"[Main] Starting camera via {obj.__class__.__name__}.{attr}",
+                            #     file=sys.stderr, flush=True)
+                            # w.start_camera()
+                            # return
 
             # 2) Fallback: scan attributes for anything with start_camera()
             for obj in candidates:
@@ -77,7 +78,8 @@ def main():
 
 
         # Schedule camera start after the event loop starts and widgets are realized
-        QTimer.singleShot(0, start_camera_if_present)
+        print("[Main] Camera startup disabled for debugging.")
+        #QTimer.singleShot(0, start_camera_if_present)
 
         #Handles starting and stopping timer
         # def connect_timer_logic():

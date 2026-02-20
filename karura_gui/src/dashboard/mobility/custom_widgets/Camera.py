@@ -161,6 +161,9 @@ class VideoWidget(QWidget):
         self._last_pixmap = None
 
     def start_camera(self):
+        #Temporary disables camera for now:
+        return
+
         if not self.camera_worker.isRunning():
             self.camera_worker._is_running = True
             self.camera_worker.start()

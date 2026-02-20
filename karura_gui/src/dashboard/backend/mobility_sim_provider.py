@@ -65,6 +65,8 @@ class MobilitySimProvider(Node):
         bw_msg.data = random.uniform(15.5, 45.2)
         self.pub_bandwidth.publish(bw_msg)
 
+        self.get_logger().info("Publish round finished")
+
 def main(args=None):
     rclpy.init(args=args)
     node = MobilitySimProvider()
