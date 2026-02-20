@@ -1,7 +1,8 @@
 import rclpy
 from PySide6.QtCore import QObject, Signal, QThread
 
-class ROS2Worker(QThread): 
+class ROS2Worker(QThread):
+    error = Signal(str)
     def __init__(self, node, parent=None):
         super().__init__(parent)
         self.node = node
