@@ -86,6 +86,11 @@ To run main_mobility.py:
 4. Run source /opt/ros/jazzy/setup.bash
 5. Run python3 -m dashboard.main_mobility
 
+To simulate backend:
+1. Do 1-4 for main_mobility
+2. cd to ./dashboard/backend
+3. python3 mobility_sim_provider.py
+
 
 ## 4. Libraries to install
 - ROS2

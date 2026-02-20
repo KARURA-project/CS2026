@@ -1,5 +1,5 @@
 import rclpy
-from rclpy.node import Node
+from rclpy import Node  
 
 class BaseDashboardNode(Node):
     """
@@ -29,13 +29,14 @@ class BaseDashboardNode(Node):
     __Args__:
         Node (_type_): _description_
     """
-    def __init__(self, node_name: str):
+    def __init__(self,node_name: str):
         super().__init__(node_name)
-        self._callbacks = {}  # key -> list[callback]
+        self.__callbacks = {}
 
-    def register_callback(self, name: str, callback):
-        self._callbacks.setdefault(name, []).append(callback)
-
-    def _dispatch(self, key: str, msg):
-        for cb in self._callbacks.get(key, []):
-            cb(msg)
+    def register_callback(self,name:str, callback):
+        self.__callbacks[name] = callback
+        
+    def __dispatch(self,name:str,msg):
+        callback = self.__callbacks.get(name)
+        if callback:
+            callback(msg)
