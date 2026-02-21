@@ -42,6 +42,14 @@ def main():
             bridge.roll_pitch_yaw_signal.connect(
                 lambda msg: window.roll_pitch_yaw_signal.set_values(remaining=msg.data)
             )
+        if hasattr(window, "battery_voltage_data_signal"):
+            bridge.roll_pitch_yaw_signal.connect(
+                lambda msg: window.battery_voltage_data_signal.set_values(remaining=msg.data)
+            )
+        if hasattr(window, "battery_power_signal"):
+            bridge.roll_pitch_yaw_signal.connect(
+                lambda msg: window.battery_power_signal.set_values(remaining=msg.data)
+            )    
 
         window.show()
         

@@ -20,6 +20,8 @@ class MobilityMainWindow(QMainWindow):
     def connect_signals(self, bridge):
         self.bridge = bridge
         bridge.battery_data_signal.connect(self._update_battery_ui)
+        bridge.battery_voltage_data_signal.connect(self._update_battery_voltage)
+        bridge.battery_power_data_signal.connect(self._update_battery_power)
         bridge.actual_rads_signal.connect(self._update_motor_angular_speed)
         bridge.roll_pitch_yaw_signal.connect(self._update_row_pitch_yaw)
 
@@ -27,10 +29,19 @@ class MobilityMainWindow(QMainWindow):
     def _update_battery_ui(self, msg):
         if hasattr(self.ui, "BatteryBox"):
             percentage = float(msg)
-            
             self.ui.BatteryBox.set_values(remaining=percentage)
         else:
             print("[WARN] Battery widget not found in UI")
+
+    @Slot(object)
+    def _update_battery_voltage(self, msg):
+        if hasattr(self.ui, "BatteryBox"):
+            self.ui.BatteryBox.set_values(voltage=float(msg))
+
+    @Slot(object)
+    def _update_battery_power(self, msg):
+        if hasattr(self.ui, "BatteryBox"):
+            self.ui.BatteryBox.set_values(power=float(msg))
 
     @Slot(object)
     def _update_motor_angular_speed(self, msg):
@@ -42,4 +53,5 @@ class MobilityMainWindow(QMainWindow):
     @Slot(object)
     def _update_row_pitch_yaw(self, msg):
         if hasattr(self.ui, "MotorPanel"):
-            print(msg)
+            doNothing = 0
+    

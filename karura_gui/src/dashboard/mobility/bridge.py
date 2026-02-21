@@ -17,6 +17,8 @@ class MobilityBridge(BaseROS2Bridge):
     odometry_filtered_signal = Signal(Odometry)
     bandwidth_signal = Signal(Float64)
     battery_data_signal = Signal(Int32)
+    battery_voltage_data_signal = Signal(Float64)
+    battery_power_data_signal = Signal(Float64)
     navigation_status_signal = Signal(String)
     fisheye_cam_signal = Signal(String)
     gps_map_signal = Signal(Float64MultiArray)
@@ -50,6 +52,8 @@ class MobilityBridge(BaseROS2Bridge):
         self.mobility_node.register_callback("odometry_filtered", self._emit_odometry_filtered)
         self.mobility_node.register_callback("bandwidth", self._emit_bandwidth)
         self.mobility_node.register_callback("battery_data", self._emit_battery_data)
+        self.mobility_node.register_callback("battery_voltage_data", self._emit_battery_voltage_data)
+        self.mobility_node.register_callback("battery_power_data", self._emit_battery_power_data)
         self.mobility_node.register_callback("navigation_status", self._emit_navigation_status)
         self.mobility_node.register_callback("fisheye_cam", self._emit_fisheye_cam)
         self.mobility_node.register_callback("gps_map", self._emit_gps_map)
@@ -108,6 +112,19 @@ class MobilityBridge(BaseROS2Bridge):
             self.battery_data_signal.emit(msg)
         except Exception as e:
             self.error_signal.emit(f"Error emitting battery_data: {e}")
+
+    def _emit_battery_voltage_data(self, msg: Float64):
+        try:
+            self.battery_voltage_data_signal.emit(msg)
+        except Exception as e:
+            self.error_signal.emit(f"Error emitting battery_voltage_data")
+        
+    def _emit_battery_power_data(self, msg: Float64):
+        try:
+            self.battery_power_data_signal.emit(msg)
+        except Exception as e:
+            self.error_signal.emit(f"Error emitting battery_power_data")
+        
 
     def _emit_navigation_status(self, msg: String):
         try:
