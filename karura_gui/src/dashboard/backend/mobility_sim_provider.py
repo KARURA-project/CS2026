@@ -41,45 +41,51 @@ class MobilitySimProvider(Node):
         status_msg.data = random.choice(["READY", "MOVING", "AUTONOMOUS", "MANUAL"])
         self.pub_status.publish(status_msg)
 
-        # 5. GPS Data (Simulating a slight walk around a coordinate)
+        # 2. GPS Data (Simulating a slight walk around a coordinate)
         gps_msg = NavSatFix()
         gps_msg.latitude = 37.7749 + (random.uniform(-0.001, 0.001))
         gps_msg.longitude = -122.4194 + (random.uniform(-0.001, 0.001))
         gps_msg.altitude = 15.0 + random.uniform(-0.5, 0.5)
         self.pub_gps_data.publish(gps_msg)
 
-        # 6. Actual Rads (4 wheels/motors)
-        def create_realistic_rads():
-            r = random.random()
-            
-            if r < 0.94:
-                return 0.00
-            elif r < 0.99:  # 0.94 + 0.05
-                return 0.01
-            else:           # Remaining 0.01
-                return 0.02
-        
-        rads_msg = Float64MultiArray()
-        #rads_msg.data = [random.uniform(0.0, 6.28) for _ in range(4)]
-        rads_msg.data = [create_realistic_rads() for _ in range(4)]
+        # 3. Actual Rads and Angles (4 wheels/motors)
+        #Use step to create a seed for consistent "random" behavior per 60s cycle
+        rng = random.Random(int(self.step // 60))
+        t_start, v_max = rng.uniform(2, 10), rng.uniform(2, 8)
+        t_mid, t_end = rng.uniform(20, 30), rng.uniform(45, 55)
 
+        # Velocity Profile: Speed up, Slow down, Stop, Speed up, Slow down
+        # A simple absolute sine of the clock creates the "two-hump" speed profile
+        clock = (self.step * 10) % 60
+        active = t_start < clock < t_end
+        # Multi-wave sine creates realistic acceleration/deceleration humps
+        target_speed = v_max * abs(math.sin((clock - t_start) * 0.15)) if active else 0.0
+
+        # Publish Rads
+        rads_msg = Float64MultiArray()
+        rads_msg.data = [max(0.0, target_speed + random.uniform(-0.1, 0.1)) if active else 0.0 for _ in range(4)]
         self.pub_rads.publish(rads_msg)
+
+        # Battery Power (Simplified: Speed * Voltage / 10)
+        batt_pow_msg = Float64()
+        batt_pow_msg.data = 24.0
+        self.pub_battery_power.publish(batt_pow_msg)
 
         angle_msg = Float64MultiArray()
         angle_msg.data = [0.0, 0.0, 0.0, 0.0] 
         self.pub_angle.publish(angle_msg)
 
-        # 2. Battery Data 
+        # 4. Battery Data 
         batt_msg = Int32()
         batt_msg.data = int(92 - (self.step / 69 + .1))
         self.pub_battery.publish(batt_msg)
         
-        # 3. Corrected Battery Voltage
+        # 5. Corrected Battery Voltage
         batt_volt_msg = Float64()
         batt_volt_msg.data = 21 + (random.random() * 0.02) + (sum(rads_msg.data) * 0.012)
         self.pub_battery_voltage.publish(batt_volt_msg)
 
-        # 4. Corrected Battery Power
+        # 6. Corrected Battery Power
         batt_pow_msg = Float64()
         batt_pow_msg.data = 24.0   
         self.pub_battery_power.publish(batt_pow_msg) 
