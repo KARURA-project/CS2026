@@ -41,21 +41,6 @@ class MobilitySimProvider(Node):
         status_msg.data = random.choice(["READY", "MOVING", "AUTONOMOUS", "MANUAL"])
         self.pub_status.publish(status_msg)
 
-        # 2. Battery Data 
-        batt_msg = Int32()
-        batt_msg.data = int(92 - (self.step / 69 + .1))
-        self.pub_battery.publish(batt_msg)
-        
-        # 3. Corrected Battery Voltage
-        batt_volt_msg = Float64()
-        batt_volt_msg.data = 22.8  #
-        self.pub_battery_voltage.publish(batt_volt_msg)
-
-        # 4. Corrected Battery Power
-        batt_pow_msg = Float64()
-        batt_pow_msg.data = 24.0   
-        self.pub_battery_power.publish(batt_pow_msg) 
-
         # 5. GPS Data (Simulating a slight walk around a coordinate)
         gps_msg = NavSatFix()
         gps_msg.latitude = 37.7749 + (random.uniform(-0.001, 0.001))
@@ -83,6 +68,21 @@ class MobilitySimProvider(Node):
         angle_msg = Float64MultiArray()
         angle_msg.data = [0.0, 0.0, 0.0, 0.0] 
         self.pub_angle.publish(angle_msg)
+
+        # 2. Battery Data 
+        batt_msg = Int32()
+        batt_msg.data = int(92 - (self.step / 69 + .1))
+        self.pub_battery.publish(batt_msg)
+        
+        # 3. Corrected Battery Voltage
+        batt_volt_msg = Float64()
+        batt_volt_msg.data = 21 + (random.random() * 0.02) + (sum(rads_msg.data) * 0.012)
+        self.pub_battery_voltage.publish(batt_volt_msg)
+
+        # 4. Corrected Battery Power
+        batt_pow_msg = Float64()
+        batt_pow_msg.data = 24.0   
+        self.pub_battery_power.publish(batt_pow_msg) 
                                
         # 7. Odometry (Simulating a circle)
         odom_msg = Odometry()

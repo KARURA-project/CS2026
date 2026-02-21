@@ -2,7 +2,6 @@ from PySide6.QtWidgets import QMainWindow
 from PySide6.QtCore import Slot
 from .MobilityScreen import Ui_MainWindow
 
-
 class MobilityMainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -11,11 +10,14 @@ class MobilityMainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        # --- State Variables for Persistence ---
+        self._last_batt_rem = None
+        self._last_batt_volt = None
+        self._last_batt_pow = None
+
         # Optional: expose commonly-used widgets for convenience
         if hasattr(self.ui, "maincameravideo"):
             self.maincameravideo = self.ui.maincameravideo
-
-        # self.setStyleSheet("background-color: gray;")
 
     def connect_signals(self, bridge):
         self.bridge = bridge
@@ -28,30 +30,44 @@ class MobilityMainWindow(QMainWindow):
     @Slot(object) 
     def _update_battery_ui(self, msg):
         if hasattr(self.ui, "BatteryBox"):
-            percentage = float(msg)
-            self.ui.BatteryBox.set_values(remaining=percentage)
+            self._last_batt_rem = float(msg)
+            # Pass all three so the others don't revert to "NULL"
+            self.ui.BatteryBox.set_values(
+                voltage=self._last_batt_volt, 
+                power=self._last_batt_pow, 
+                remaining=self._last_batt_rem
+            )
         else:
             print("[WARN] Battery widget not found in UI")
 
     @Slot(object)
     def _update_battery_voltage(self, msg):
         if hasattr(self.ui, "BatteryBox"):
-            self.ui.BatteryBox.set_values(voltage=float(msg))
+            self._last_batt_volt = float(msg)
+            self.ui.BatteryBox.set_values(
+                voltage=self._last_batt_volt, 
+                power=self._last_batt_pow, 
+                remaining=self._last_batt_rem
+            )
 
     @Slot(object)
     def _update_battery_power(self, msg):
         if hasattr(self.ui, "BatteryBox"):
-            self.ui.BatteryBox.set_values(power=float(msg))
+            self._last_batt_pow = float(msg)
+            self.ui.BatteryBox.set_values(
+                voltage=self._last_batt_volt, 
+                power=self._last_batt_pow, 
+                remaining=self._last_batt_rem
+            )
 
     @Slot(object)
     def _update_motor_angular_speed(self, msg):
         if hasattr(self.ui, "MotorPanel"):
             speeds = list(msg.data)
-
             self.ui.MotorPanel.update_from_ros(speeds=speeds)
     
     @Slot(object)
     def _update_row_pitch_yaw(self, msg):
         if hasattr(self.ui, "MotorPanel"):
-            doNothing = 0
-    
+            # logic here if needed
+            pass
