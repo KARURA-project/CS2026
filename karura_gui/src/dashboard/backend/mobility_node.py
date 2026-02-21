@@ -36,7 +36,8 @@ class MobilityNode(BaseDashboardNode):
         self.fisheye_cam_sub = self.create_subscription(String, "fisheye_cam", self.fisheye_cam_callback, 10)
         self.gps_map_sub = self.create_subscription(Float64MultiArray, "gps_map", self.gps_map_callback, 10)
         self.gps_data_sub = self.create_subscription(NavSatFix, "gps_data", self.gps_data_callback, 10)
-
+        self.battery_voltage_data_sub = self.create_subscription(Float64, "battery_voltage_data", self.battery_voltage_data_callback, 10)
+        self.battery_power_data_sub = self.create_subscription(Float64, "battery_power_data", self.battery_power_data_callback, 10)
         self.get_logger().info("[MobilityNode] Telemetry subscribers initialized.")
 
         # publisher for cmd_vel
@@ -83,6 +84,14 @@ class MobilityNode(BaseDashboardNode):
     def battery_data_callback(self, msg: Int32):
         self.get_logger().info(f"battery_data: {msg.data}")
         self._dispatch("battery_data", msg.data)
+
+    def battery_voltage_data_callback(self, msg: Float64):
+            self.get_logger().info(f"battery_voltage_data: {msg.data}")
+            self._dispatch("battery_voltage_data", msg.data)
+
+    def battery_power_data_callback(self, msg: Float64):
+        self.get_logger().info(f"battery_power_data: {msg.data}")
+        self._dispatch("battery_power_data", msg.data)
 
     def navigation_status_callback(self, msg: String):
         self.get_logger().info(f"navigation_status: {msg.data}")
