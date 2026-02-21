@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
 )
 
 from dashboard.core import config
-from .widgets import MotorInfoPanel, DirectionWidget, BatteryStatusWidget
+from .widgets import MotorInfoPanel, DirectionWidget, BatteryStatusWidget, HelperBox
 from .custom_widgets.Camera import VideoWidget
 
 
@@ -57,6 +57,10 @@ class Ui_MainWindow(object):
         self.MotorPanel = MotorInfoPanel(self.leftgroup)
         self.MotorPanel.setObjectName(u"MotorPanel")
         self.leftLayout.addWidget(self.MotorPanel)
+
+        self.HelperBox = HelperBox("Controls & Information", self.leftgroup)
+        self.HelperBox.setObjectName(u"HelperBox")
+        self.leftLayout.addWidget(self.HelperBox)
 
         self.splitter.addWidget(self.leftgroup)
 

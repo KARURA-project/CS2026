@@ -311,6 +311,47 @@ class DirectionWidget(QWidget):
         return super().keyReleaseEvent(event)
 
 
+class HelperBox(QWidget):
+    def __init__(self, title_text: str, parent=None):
+        super().__init__(parent)
+
+        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setObjectName("HelperBox")
+        
+        self.setMinimumHeight(130)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        root = QVBoxLayout(self)
+        root.setContentsMargins(14, 10, 14, 12)
+        root.setSpacing(8)
+
+        self.title = QLabel(self, text=(
+            "<div style='font-size: 16px'>Controls & Information<\div>"
+        ))
+        self.title.setObjectName("helperBoxTitle") # Match batteryTitle QSS if preferred
+        self.title.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        root.addWidget(self.title)
+
+        self.body = QLabel(self, text=(
+            "<div style='font-size: 12px; line-height: 140%; color: #F2F2F2;'>"
+            "<b>Left:</b> &larr;<br>"
+            "<b>Right:</b> &rarr;<br>"
+            "<b>Up:</b> &uarr;<br>"
+            "<b>Down:</b> &darr;<br>"
+            "<b>Rotate CCW:</b> Q<br>"
+            "<b>Rotate CW:</b> E<br>"
+            "<b>Speed Up:</b> +<br>"
+            "<b>Slow Down:</b> -"
+            "</div>"
+        ))
+        self.body.setObjectName("statusBoxBody")
+        self.body.setTextFormat(Qt.RichText) # Ensures HTML renders correctly
+        self.body.setWordWrap(True)
+        self.body.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        
+        # Add to layout with a stretch factor to push it to the top
+        root.addWidget(self.body, 1)
+
 # ============================================================
 # Motor panel (2x2 fixed, TL/TR/BL/BR) with speed + angle
 # ============================================================
