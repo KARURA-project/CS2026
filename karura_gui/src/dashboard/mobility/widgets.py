@@ -371,6 +371,7 @@ class MotorInfoPanel(QWidget):
         speeds: list/tuple/dict for indices 0..3
         angles_deg: list/tuple/dict for indices 0..3 (steering angle in degrees)
         """
+
         self._last_update_ms = self._now_ms()
 
         def _get(src, idx):

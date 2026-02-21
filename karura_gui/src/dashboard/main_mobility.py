@@ -34,6 +34,14 @@ def main():
             bridge.battery_data_signal.connect(
                 lambda msg: window.battery_status.set_values(remaining=msg.data)
             )
+        if hasattr(window, "actual_rads_signal"):
+            bridge.actual_rads_signal.connect(
+                lambda msg: window.actual_rads_signal.set_values(remaining=msg.data)
+            )
+        if hasattr(window, "roll_pitch_yaw_signal"):
+            bridge.roll_pitch_yaw_signal.connect(
+                lambda msg: window.roll_pitch_yaw_signal.set_values(remaining=msg.data)
+            )
 
         window.show()
         
@@ -60,11 +68,11 @@ def main():
                     if hasattr(obj, attr):
                         w = getattr(obj, attr)
                         if hasattr(w, "start_camera"):
-                            print("Camera on pause for now. Change in main_mobility.py")
-                            # print(f"[Main] Starting camera via {obj.__class__.__name__}.{attr}",
-                            #     file=sys.stderr, flush=True)
-                            # w.start_camera()
-                            # return
+                            #print("Camera on pause for now. Change in main_mobility.py")
+                            print(f"[Main] Starting camera via {obj.__class__.__name__}.{attr}",
+                                file=sys.stderr, flush=True)
+                            w.start_camera()
+                            return
 
             # 2) Fallback: scan attributes for anything with start_camera()
             for obj in candidates:
@@ -85,8 +93,8 @@ def main():
 
 
         # Schedule camera start after the event loop starts and widgets are realized
-        print("[Main] Camera startup disabled for debugging.")
-        #QTimer.singleShot(0, start_camera_if_present)
+        #print("[Main] Camera startup disabled for debugging.")
+        QTimer.singleShot(0, start_camera_if_present)
 
         #Handles starting and stopping timer
         # def connect_timer_logic():

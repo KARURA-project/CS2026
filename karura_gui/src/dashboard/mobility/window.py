@@ -19,8 +19,9 @@ class MobilityMainWindow(QMainWindow):
 
     def connect_signals(self, bridge):
         self.bridge = bridge
-        # This will now work because self.battery_status is defined
         bridge.battery_data_signal.connect(self._update_battery_ui)
+        bridge.actual_rads_signal.connect(self._update_motor_angular_speed)
+        bridge.roll_pitch_yaw_signal.connect(self._update_row_pitch_yaw)
 
     @Slot(object) 
     def _update_battery_ui(self, msg):
@@ -30,3 +31,15 @@ class MobilityMainWindow(QMainWindow):
             self.ui.BatteryBox.set_values(remaining=percentage)
         else:
             print("[WARN] Battery widget not found in UI")
+
+    @Slot(object)
+    def _update_motor_angular_speed(self, msg):
+        if hasattr(self.ui, "MotorPanel"):
+            speeds = list(msg.data)
+
+            self.ui.MotorPanel.update_from_ros(speeds=speeds)
+    
+    @Slot(object)
+    def _update_row_pitch_yaw(self, msg):
+        if hasattr(self.ui, "MotorPanel"):
+            print(msg)
