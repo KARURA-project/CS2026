@@ -38,6 +38,10 @@ def main():
             bridge.actual_rads_signal.connect(
                 lambda msg: window.actual_rads_signal.set_values(remaining=msg.data)
             )
+        if hasattr(window, "actual_angle_signal"):
+            bridge.actual_angle_signal.connect(
+                lambda msg: window.actual_angle_signal.set_values(remaining=msg.data)
+            )
         if hasattr(window, "roll_pitch_yaw_signal"):
             bridge.roll_pitch_yaw_signal.connect(
                 lambda msg: window.roll_pitch_yaw_signal.set_values(remaining=msg.data)

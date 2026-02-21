@@ -13,6 +13,7 @@ from sensor_msgs.msg import NavSatFix
 class MobilityBridge(BaseROS2Bridge):
     mobility_status_signal = Signal(String)
     actual_rads_signal = Signal(Float64MultiArray)
+    actual_angle_signal = Signal(Float64MultiArray)
     roll_pitch_yaw_signal = Signal(Float64MultiArray)
     odometry_filtered_signal = Signal(Odometry)
     bandwidth_signal = Signal(Float64)
@@ -48,6 +49,7 @@ class MobilityBridge(BaseROS2Bridge):
         # Mobility telemetry callbacks
         self.mobility_node.register_callback("mobility_status", self._emit_mobility_status)
         self.mobility_node.register_callback("actual_rads", self._emit_actual_rads)
+        self.mobility_node.register_callback("actual_angle", self._emit_actual_angle)  
         self.mobility_node.register_callback("roll_pitch_yaw", self._emit_roll_pitch_yaw)
         self.mobility_node.register_callback("odometry_filtered", self._emit_odometry_filtered)
         self.mobility_node.register_callback("bandwidth", self._emit_bandwidth)
@@ -88,6 +90,12 @@ class MobilityBridge(BaseROS2Bridge):
             self.actual_rads_signal.emit(msg)
         except Exception as e:
             self.error_signal.emit(f"Error emitting actual_rads: {e}")
+
+    def _emit_actual_angle(self, msg: Float64MultiArray):
+        try:
+            self.actual_angle_signal.emit(msg)
+        except Exception as e:
+            self.error_signal.emit(f"Error emitting actual_angle: {e}")
 
     def _emit_roll_pitch_yaw(self, msg: Float64MultiArray):
         try:

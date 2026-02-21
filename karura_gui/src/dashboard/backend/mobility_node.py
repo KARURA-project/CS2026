@@ -28,6 +28,7 @@ class MobilityNode(BaseDashboardNode):
         # mobility node subscribers
         self.mobility_status_sub = self.create_subscription(String, "mobility_status", self.mobility_status_callback, 10)
         self.actual_rads_sub = self.create_subscription(Float64MultiArray, "actual_rads", self.actual_rads_callback, 10)
+        self.actual_angle_sub = self.create_subscription(Float64MultiArray, "actual_angle", self.actual_angle_callback, 10)
         self.rpy_sub = self.create_subscription(Float64MultiArray, "roll_pitch_yaw", self.rpy_callback, 10)
         self.odometry_sub = self.create_subscription(Odometry, "odometry_filtered", self.odometry_callback, 10)
         self.bandwidth_sub = self.create_subscription(Float64, "bandwidth", self.bandwidth_callback, 10)
@@ -62,6 +63,13 @@ class MobilityNode(BaseDashboardNode):
         try:
             self.get_logger().info(f"Received rads: {len(msg.data)} values")
             self._dispatch("actual_rads", msg)
+        except Exception as e:
+            self.get_logger().error(f"Dispatch error: {e}")
+
+    def actual_angle_callback(self, msg: Float64MultiArray):
+        try:
+            self.get_logger().info(f"Received angles: {len(msg.data)} values")
+            self._dispatch("actual_angle", msg)
         except Exception as e:
             self.get_logger().error(f"Dispatch error: {e}")
 
