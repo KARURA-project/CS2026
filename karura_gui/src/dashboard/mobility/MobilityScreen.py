@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
 )
 
 from dashboard.core import config
-from .widgets import MotorInfoPanel, DirectionWidget, BatteryStatusWidget, HelperBox
+from .widgets import MotorInfoPanel, DirectionWidget, BatteryStatusWidget, HelperBox, CameraToggleWidget
 from .custom_widgets.Camera import VideoWidget
 
 
@@ -112,6 +112,22 @@ class Ui_MainWindow(object):
         batteryDockLayout.addWidget(self.BatteryBox)
 
         self.hudDockLayout.addWidget(self.batteryDock, 0, Qt.AlignLeft | Qt.AlignVCenter)
+
+        self.hudDockLayout.addStretch(1)
+
+        self.cameraToggleContainer = QWidget(self.hudDock)
+        self.cameraToggleLayout = QVBoxLayout(self.cameraToggleContainer)
+        self.cameraToggleLayout.setContentsMargins(0, 0, 0, 0)
+
+        self.CameraToggleButton = CameraToggleWidget(self.cameraToggleContainer)
+        self.CameraToggleButton.setObjectName("CameraToggleButton")
+        self.CameraToggleButton.setFixedWidth(220) 
+
+        self.cameraToggleLayout.addWidget(self.CameraToggleButton)
+
+        self.hudDockLayout.addWidget(self.cameraToggleContainer, 0, Qt.AlignTop | Qt.AlignHCenter)
+
+        self.hudDockLayout.addStretch(1)
 
         # Controls card MIDDLE
         # self.controlsDock = QFrame(self.hudDock)

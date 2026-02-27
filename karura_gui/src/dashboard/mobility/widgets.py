@@ -11,6 +11,11 @@ from PySide6.QtCore import (
     QTimer,
     Qt,
     QCoreApplication,
+    Property,
+    QPropertyAnimation,
+    QEasingCurve,
+    Signal,
+    QRect,
 )
 
 from .custom_widgets.MotorInfoBox import Ui_MotorInfoBox
@@ -428,3 +433,62 @@ class MotorInfoPanel(QWidget):
             spd = _get(speeds, i)
             ang = _get(angles_deg, i)
             self.motors[i].set_values(spd, ang)
+
+class CameraToggleWidget(QWidget):
+    toggled = Signal(bool)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        
+        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setObjectName("CameraToggleWidget")
+        self.setFixedHeight(50)
+        
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(14, 0, 14, 0)
+        layout.setSpacing(10)
+
+        # Label matching your Battery/Motor titles
+        self.label = QLabel("Camera System", self)
+        self.label.setStyleSheet("color: #F2F2F2; font-size: 13px; font-weight: bold;")
+
+        # The Toggle Button
+        self.btn = QPushButton("OFF", self)
+        self.btn.setCheckable(True)
+        self.btn.setFixedWidth(80)
+        self.btn.setCursor(Qt.PointingHandCursor)
+        
+        # Connect internal logic to update text and emit signal
+        self.btn.toggled.connect(self._on_toggled)
+
+        # Styling using CSS to match your DirectionWidget palette
+        self.btn.setStyleSheet("""
+            QPushButton {
+                background-color: #3D3D3D;
+                color: #AAAAAA;
+                border: 1px solid #555555;
+                border-radius: 12px;
+                font-weight: bold;
+                padding: 4px;
+            }
+            QPushButton:checked {
+                background-color: #3A1C22;
+                color: #E05E5E;
+                border: 1px solid #E05E5E;
+                text-shadow: 0px 0px 5px #E05E5E;
+            }
+            QPushButton:hover {
+                border: 1px solid #777777;
+            }
+        """)
+
+        layout.addWidget(self.label, 1)
+        layout.addWidget(self.btn, 0)
+
+    def _on_toggled(self, checked: bool):
+        self.btn.setText("ON" if checked else "OFF")
+        self.toggled.emit(checked)
+
+    def set_state(self, active: bool):
+        """Programmatically set the camera state."""
+        self.btn.setChecked(active)
