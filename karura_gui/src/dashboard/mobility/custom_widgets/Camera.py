@@ -165,6 +165,8 @@ class VideoWidget(QWidget):
         #return
 
         if not self.camera_worker.isRunning():
+            self.video_label.setText("Initalizing Camera...")
+            self.video_label.setStyleSheet("background-color: black; color: #ffffff; font-weight: bold;")
             self.camera_worker._is_running = True
             self.camera_worker.start()
 

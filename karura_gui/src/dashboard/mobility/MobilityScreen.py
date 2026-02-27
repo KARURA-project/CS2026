@@ -281,6 +281,21 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         # ============================================================
+        # Camera Power Toggle Wiring
+        # ============================================================
+        def on_camera_toggle(is_active):
+            if is_active:
+                self.maincameravideo.start_camera()
+            else:
+                self.maincameravideo.stop_camera()
+
+        # Connect the toggle signal to our local handler
+        self.CameraToggleButton.toggled.connect(on_camera_toggle)
+
+        # Set the initial UI state to match the code's auto-start
+        self.CameraToggleButton.set_state(True)
+
+        # ============================================================
         # Camera switching wiring
         # ============================================================
         self._camera_sources = [config.RTSP_FRONT, config.RTSP_REAR, config.RTSP_ARM]
