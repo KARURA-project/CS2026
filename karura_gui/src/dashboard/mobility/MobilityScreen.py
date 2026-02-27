@@ -115,10 +115,12 @@ class Ui_MainWindow(object):
 
         self.hudDockLayout.addStretch(1)
 
+        #Container to allow vertical alignment of camera toggle button
         self.cameraToggleContainer = QWidget(self.hudDock)
         self.cameraToggleLayout = QVBoxLayout(self.cameraToggleContainer)
         self.cameraToggleLayout.setContentsMargins(0, 0, 0, 0)
 
+        #Creates Camera Toggle Widget
         self.CameraToggleButton = CameraToggleWidget(self.cameraToggleContainer)
         self.CameraToggleButton.setObjectName("CameraToggleButton")
         self.CameraToggleButton.setFixedWidth(220) 

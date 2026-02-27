@@ -449,7 +449,7 @@ class CameraToggleWidget(QWidget):
         layout.setSpacing(10)
 
         # Label matching your Battery/Motor titles
-        self.label = QLabel("Camera System", self)
+        self.label = QLabel("Toggle Camera", self)
         self.label.setStyleSheet("color: #F2F2F2; font-size: 13px; font-weight: bold;")
 
         # The Toggle Button
