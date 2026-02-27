@@ -91,11 +91,35 @@ To simulate backend:
 2. cd to ./dashboard/backend
 3. python3 mobility_sim_provider.py
 
-
 ## 4. Libraries to install
 - ROS2
 - Pyside6
 - OpenCV
+
+## 5. How to get camera working locally on Windows
+If you want to test it on a webcam on Windows, whether be an integrated one or an external one connected via USB, you need to create a bridge between Windows and WSL.
+To do this, install usbipd on your Windows device. Pick the lastest version, though any version of 5.0 or above should be fine.
+After that, do
+
+`usbipd list'
+
+This will show the list of devices relating to video footage, including the webcams, which should clearly be displayed under DEVICE. On the same row as the webcam should
+be an associated BUSID.
+
+You will then do
+`usbipd bind --busid <BUSID>`
+
+and then 
+`usbipd attach --busid <BUSID>`
+
+If that doesn't work, do
+`usbipd unbind --busid <BUSID>`
+`usbipd bind --busid <BUSID> --force`
+
+And restart your device.
+
+After that, it should be connected.
+
 
 If you have issues still install
 - pyyaml (pip install pyyaml) 

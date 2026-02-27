@@ -79,7 +79,9 @@ class Ui_MainWindow(object):
         # ------------------------------------------------------------
         # 1) MAIN CAMERA VIEW
         # ------------------------------------------------------------
-        self.maincameravideo = VideoWidget(source=config.RTSP_URL)
+        #Disabled RTSP temporarily and replaced with local camera
+        #self.maincameravideo = VideoWidget(source=config.RTSP_URL)
+        self.maincameravideo = VideoWidget(source=0)
         self.maincameravideo.setObjectName(u"maincameravideo")
         self.maincameravideo.setMinimumSize(QSize(0, 0))
         self.maincameravideo.setMaximumSize(QSize(16777215, 16777215))
