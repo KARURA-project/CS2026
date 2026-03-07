@@ -37,8 +37,8 @@ class MobilityNode(BaseDashboardNode):
         self.fisheye_cam_sub = self.create_subscription(String, "fisheye_cam", self.fisheye_cam_callback, 10)
         self.gps_map_sub = self.create_subscription(Float64MultiArray, "gps_map", self.gps_map_callback, 10)
         self.gps_data_sub = self.create_subscription(NavSatFix, "gps_data", self.gps_data_callback, 10)
-        self.battery_voltage_data_sub = self.create_subscription(Float64, "battery_voltage_data", self.battery_voltage_data_callback, 10)
-        self.battery_power_data_sub = self.create_subscription(Float64, "battery_power_data", self.battery_power_data_callback, 10)
+        self.battery_voltage_data_sub = self.create_subscription(Float64, "temperature_data", self.battery_voltage_data_callback, 10)
+        self.battery_power_data_sub = self.create_subscription(Float64, "humidity_data", self.battery_power_data_callback, 10)
         self.get_logger().info("[MobilityNode] Telemetry subscribers initialized.")
 
         # publisher for cmd_vel

@@ -1,5 +1,8 @@
+#rtsp_url = "rtsp://127.0.0.1:8554/test" 
+rtsp_url = 0 
 #!/usr/bin/env python3
 import sys
+
 import cv2
 import numpy as np
 
@@ -32,7 +35,7 @@ class CameraWorker(QThread):
     frame_ready = Signal(np.ndarray)
     error_occurred = Signal(str)
 
-    def __init__(self, parent=None, source=0):
+    def __init__(self, parent=None, source=rtsp_url):
         super().__init__(parent)
         self._is_running = True
         self.cap = None
@@ -57,7 +60,8 @@ class CameraWorker(QThread):
     def _open_capture(self, source):
         """Open a cv2.VideoCapture for RTSP or local camera."""
         if isinstance(source, str) and source.startswith("rtsp://"):
-            cap = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
+            #cap = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
+            cap = cv2.VideoCapture(source)
             # Best-effort low-latency hint (not always honored)
             cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
             print(f"[CameraWorker] Opening RTSP source={source!r}")
@@ -143,7 +147,7 @@ class VideoWidget(QWidget):
       - switch_camera(new_source)  # RTSP url or camera index
     """
 
-    def __init__(self, parent=None, source=0):
+    def __init__(self, parent=None, source=rtsp_url):
         super().__init__(parent)
 
         self.layout = QVBoxLayout(self)

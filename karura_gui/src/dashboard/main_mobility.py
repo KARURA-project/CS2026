@@ -2,7 +2,8 @@ import sys
 from PySide6.QtWidgets import QApplication, QMessageBox
 import traceback
 from PySide6.QtCore import QTimer
-from karura_gui.mobility import MobilityMainWindow, MobilityBridge
+# from karura_gui.mobility import MobilityMainWindow, MobilityBridge
+from dashboard.mobility import MobilityMainWindow, MobilityBridge
 # raise RuntimeError("SENTINEL: dashboard.main-mobility is running")
 from pathlib import Path
 
@@ -47,11 +48,11 @@ def main():
                 lambda msg: window.roll_pitch_yaw_signal.set_values(remaining=msg.data)
             )
         if hasattr(window, "battery_voltage_data_signal"):
-            bridge.roll_pitch_yaw_signal.connect(
+            bridge.battery_voltage_data_signal.connect(
                 lambda msg: window.battery_voltage_data_signal.set_values(remaining=msg.data)
             )
         if hasattr(window, "battery_power_signal"):
-            bridge.roll_pitch_yaw_signal.connect(
+            bridge.battery_power_data_signal.connect(
                 lambda msg: window.battery_power_signal.set_values(remaining=msg.data)
             )    
 

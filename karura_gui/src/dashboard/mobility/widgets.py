@@ -72,7 +72,7 @@ class BatteryStatusWidget(QWidget):
         root.setSpacing(10)
 
         # Title
-        self.title = QLabel("Battery", self)
+        self.title = QLabel("Temperature and Humidity", self)
         self.title.setObjectName("batteryTitle")
         self.title.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         root.addWidget(self.title)
@@ -105,8 +105,8 @@ class BatteryStatusWidget(QWidget):
 
             return row, val
 
-        r1, self.voltageValue = mk_row("Voltage:", "[V]", "batteryVoltageValue")
-        r2, self.powerValue   = mk_row("Power:",   "[W]", "batteryPowerValue")
+        r1, self.voltageValue = mk_row("Temperature:", "[℃]", "batteryVoltageValue")
+        r2, self.powerValue   = mk_row("Humidity:",   "[%]", "batteryPowerValue")
         r3, self.remainValue  = mk_row("Remaining:", "[%]", "batteryRemainValue")
 
         rows.addLayout(r1)

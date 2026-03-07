@@ -70,7 +70,7 @@ class Ui_BatteryInfoBox(object):
     # setupUi
 
     def retranslateUi(self, BatteryInfoBox):
-        BatteryInfoBox.setWindowTitle(QCoreApplication.translate("BatteryInfoBox", u"Form", None))
-        self.label.setText(QCoreApplication.translate("BatteryInfoBox", u"Battery", None))
+        BatteryInfoBox.setWindowTitle(QCoreApplication.translate("Temperature and Humidity", u"Form", None))
+        self.label.setText(QCoreApplication.translate("Temperature and Humidity", u"Battery", None))
     # retranslateUi
 
